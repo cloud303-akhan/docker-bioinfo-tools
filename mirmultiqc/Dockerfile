@@ -15,6 +15,8 @@ LABEL maintainer3.email="rory@mirvie.com"
 
 WORKDIR /pipeline
 
+ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
+
 RUN conda install -y python=3.6 multiqc=1.11
 
 ENTRYPOINT ["/bin/bash", "-l", "-c"]
