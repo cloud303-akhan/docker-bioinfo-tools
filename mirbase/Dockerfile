@@ -15,7 +15,7 @@ LABEL maintainer3.email="rory@mirvie.com"
 
 WORKDIR /pipeline
 
-RUN yum install -y wget gzip which
+RUN yum install -y wget gzip which procps
 
 # Install miniconda (from https://fabiorosado.dev/blog/install-conda-in-docker/)
 ENV CONDA_DIR /opt/conda
