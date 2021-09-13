@@ -1,6 +1,5 @@
 FROM mirbase:latest
 
-# metadata
 LABEL base.image="mirbase"
 LABEL version="0.1"
 LABEL software="mirvie_STAR"
@@ -16,10 +15,6 @@ LABEL maintainer3.email="rory@mirvie.com"
 
 WORKDIR /pipeline
 
-RUN conda install -y star
+RUN conda install -y python=3.6 star=2.6.1b
 
-## Make RUN commands use the new environment:
-#SHELL ["conda", "run", "-n", "cfRNA", "/bin/bash", "-c"]
-
-# The code to run when container is started:
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/bin/bash", "-l", "-c"]

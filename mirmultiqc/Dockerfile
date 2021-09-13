@@ -2,9 +2,9 @@ FROM mirbase:latest
 
 LABEL base.image="mirbase"
 LABEL version="0.1"
-LABEL software="mirvie_htseq"
+LABEL software="mirvie_STAR"
 LABEL software.version="0.1"
-LABEL description="htseq"
+LABEL description="STAR"
 LABEL website="https://gitlab.com/Mirvie/pipe-cfrna"
 LABEL maintainer1="Farooq Siddiqui"
 LABEL maintainer1.email="farooq@mirvie.com"
@@ -15,6 +15,8 @@ LABEL maintainer3.email="rory@mirvie.com"
 
 WORKDIR /pipeline
 
-RUN conda install -y python=3.6 htseq=0.11.2
+ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
+
+RUN conda install -y python=3.6 multiqc=1.11
 
 ENTRYPOINT ["/bin/bash", "-l", "-c"]
