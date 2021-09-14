@@ -2,7 +2,7 @@
 
 set -e  # fail on any error
 
-for image in mirbase mirfastqc mirhtseq mirpicard mirrseqc mirsamtools mirstar mirtrimmomatic
+for image in mirbase mirbenedict mirfastqc mirhtseq mirpicard mirrseqc mirsamtools mirstar mirtrimmomatic
 do
 	echo "> Creating image $image"
 	exist=`docker image inspect $image:latest >/dev/null 2>&1 && echo yes || echo no`
