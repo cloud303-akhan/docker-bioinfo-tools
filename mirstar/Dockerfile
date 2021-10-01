@@ -17,4 +17,7 @@ WORKDIR /pipeline
 
 RUN conda install -y python=3.6 star=2.6.1b
 
+# Switch to non-root user
+USER dockworker
+
 ENTRYPOINT ["/bin/bash", "-l", "-c"]

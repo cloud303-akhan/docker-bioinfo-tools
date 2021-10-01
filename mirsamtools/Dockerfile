@@ -17,4 +17,7 @@ WORKDIR /pipeline
 
 RUN conda install -y python=3.6 samtools=1.9
 
+# Switch to non-root user
+USER dockworker
+
 ENTRYPOINT ["/bin/bash", "-l", "-c"]

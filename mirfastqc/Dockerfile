@@ -13,8 +13,12 @@ LABEL maintainer2.email="elaine@mirvie.com"
 LABEL maintainer3="Rory Nolan"
 LABEL maintainer3.email="rory@mirvie.com"
 
+
 WORKDIR /pipeline
 
 RUN conda install -y python=3.6 fastqc=0.11.9
+
+# Switch to non-root user
+USER dockworker
 
 ENTRYPOINT ["/bin/bash", "-l", "-c"]

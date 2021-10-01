@@ -19,4 +19,7 @@ ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
 
 RUN conda install -y python=3.6 multiqc=1.11
 
+# Switch to non-root user
+USER dockworker
+
 ENTRYPOINT ["/bin/bash", "-l", "-c"]

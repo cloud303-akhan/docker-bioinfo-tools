@@ -21,8 +21,8 @@ RUN yum install -y gdb libudev systemd-libs
 COPY bcl-convert-3.8.2_12_g85770e0b-2.el7.x86_64.rpm .
 RUN rpm -i bcl-convert-3.8.2_12_g85770e0b-2.el7.x86_64.rpm
 
-## Make RUN commands use the new environment:
-#SHELL ["conda", "run", "-n", "cfRNA", "/bin/bash", "-c"]
+# Switch to non-root user
+USER dockworker
 
 # The code to run when container is started:
 ENTRYPOINT ["/bin/bash"]

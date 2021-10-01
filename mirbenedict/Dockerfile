@@ -16,5 +16,11 @@ LABEL maintainer3.email="rory@mirvie.com"
 WORKDIR /pipeline
 
 RUN conda install -y python=3.6 python-benedict=0.24.2
+RUN chgrp -R dockerunion /opt/conda
+
+RUN ls -lh /opt/conda
+
+# Switch to non-root user
+USER dockworker
 
 ENTRYPOINT ["/bin/bash", "-l", "-c"]

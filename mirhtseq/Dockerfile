@@ -17,4 +17,7 @@ WORKDIR /pipeline
 
 RUN conda install -y python=3.6 htseq=0.11.2
 
+# Switch to non-root user
+USER dockworker
+
 ENTRYPOINT ["/bin/bash", "-l", "-c"]
