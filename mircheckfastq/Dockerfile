@@ -12,7 +12,7 @@ USER root
 RUN yum install -y amazon-linux-extras
 RUN PYTHON=python2 amazon-linux-extras install rust1
 RUN cargo install --git https://github.com/stjude/fqlib.git --tag v0.7.0
-RUN mkdir -p /home/dockworker/.local/bin && cp -r /root/.cargo/bin/* /home/dockworker/.local/bin
+RUN cp -r /root/.cargo/bin/* /usr/local/bin
 
 USER dockworker
 
