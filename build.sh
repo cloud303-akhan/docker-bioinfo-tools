@@ -2,7 +2,7 @@
 
 set -e  # fail on any error
 
-for image in mirbase mirbenedict mirpandas mirfastqc mirhtseq mirpicard mirrseqc mirsamtools mirstar mirtrimmomatic mirmultiqc
+for image in mirbase mircheckfastq mirpandas mirfastqc mirhtseq mirpicard mirrseqc mirsamtools mirstar mirtrimmomatic mirmultiqc
 do
 	echo ""
 	echo ">> Creating image $image"
