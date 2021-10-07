@@ -6,11 +6,12 @@ for image in mirbase mircheckfastq mirpandas mirfastqc mirhtseq mirpicard mirrse
 do
 	echo ""
 	echo ">> Creating image $image"
-	exist=`docker image inspect $image:latest >/dev/null 2>&1 && echo yes || echo no`
+        commit=`git log -1 --format=%h`
+	exist=`docker image inspect $image:$commit >/dev/null 2>&1 && echo yes || echo no`
 	if [ "$exist" = "yes" ]; then
 		echo "Removing previous local image"
-		docker image rm -f $image
+		docker image rm -f $image:$commit
 	fi
-	docker build -t $image:latest - < $image/Dockerfile
+	docker build -t $image:$commit --build-arg GIT_COMMIT=$commit - < $image/Dockerfile
         echo "***--> COMPLETE!"
 done
