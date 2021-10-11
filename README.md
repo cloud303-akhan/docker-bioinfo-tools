@@ -1,16 +1,59 @@
 # Docker containers of Mirvie bioinformatics tools
 
-Dockerfiles for creating docker containers of bioinformatics tools used at Mirvie
+## Purpose
+The `Nextflow` pipeline relies on the Docker containers in this repo to run its  
+processes. This repo houses the Dockerfiles that creates the Docker containers containing the 
+bioinformatics tools required by the Nextflow scripts, e.g. the preeclampsia Nextflow
+script can be run with Docker containers, see 
+[Mirvie's nf-cfrna Repo](https://gitlab.com/Mirvie/nf-cfrna)). 
 
-## Building the Images for the Nextflow Pipeline
+## Requirements
+Docker must be installed. Run `docker --version` to see if Docker is already installed. 
+If not, follow the instructions at https://docs.docker.com/get-docker/ to install it 
+for your OS.
 
-### Option 1: Automation via the Build Script
-The `Nextflow` pipeline relies on the Docker containers in this repo to run its processes. 
-These containers need to be built and running before the `Nextflow` scripts can run.
-The build script will build all the containers in the repo, starting first with `mirbase`.
-NOTE: `mirrseqc` requires a significant amount of memory to build, so set the 
-memory requirements for the docker engine to 4.0 GB of memory. The `mirstar` container 
-will need 32 GB (> 16 GB) to run in the pipeline. 
+## Dockerfiles
+
+### A. Images for `nf-cfrna`
+There are 11 Docker containers required by the `nf-cfrna` Nextflow pipeline.
+
+| Image | Dependent Nextflow Process(es) | 
+| --- | --- |
+| mirbase | GET_FLOWCELLIDS, other images are built from this base image|
+| mircheckfastq  |CHECK_FASTQ|
+| mirfastqc |FASTQC|
+| mirtrimmomatic |TRIM|
+| mirstar |ALIGN |
+| mirpicard |DEDUP, RNAMETRICS|
+| mirsamtools | INDEX | 
+| mirrseqc | RSEQC|
+| mirhtseq | COUNT |
+| mirpandas | PREDICT, MAKE_RESULTS_JSON, MAKE_STATS_LG, FINALIZE_RESULTS_JSON |
+| mirmultiqc | MULTIQC |
+
+### B. Images for `BCLConvert` Nextflow Pipeline
+One Docker container is required by the `BCLConvert` Nextflow pipeline.
+
+| Image | Dependent Nextflow Process(es) | 
+| --- | --- |
+| mirbclconvert | TBD |
+
+## Building the Images
+
+The Dockerfiles need to be constructed into images before containers can be run. There
+are two options for building the images in this repo.
+
+### Option 1: Automatic Build
+The build script will build all the containers needed for `nf-crna` pipeline (i.e. will
+skip build for `mirbclconvert`), starting first with 
+`mirbase` from which all other images are built. The build script will first remove
+images that match the name and tag prior to build images tagged by the commit of this
+repo.
+
+NOTES: 
+* `mirrseqc` requires a significant amount of memory to build, so set the 
+memory requirements for the docker engine to 4.0 GB of memory. 
+* `mirstar` will need 32 GB (> 16 GB) to run in the pipeline. 
  
 1. Clone this repo. 
 ```
@@ -22,13 +65,32 @@ building the new image.
 ```
 sh build.sh
 ```
+
+3. Check that the images are created with teh correct tags pulled from the commit.
+```
+$ docker image ls
+REPOSITORY       TAG              IMAGE ID       CREATED        SIZE
+mirmultiqc       f232966          18b9b1d3bb72   2 days ago     2.34GB
+mirtrimmomatic   f232966          8674feb4ef6c   2 days ago     2.1GB
+mirstar          f232966          09899c2c209b   2 days ago     2.03GB
+mirsamtools      f232966          ff4ca83b10d3   2 days ago     2.01GB
+mirrseqc         f232966          1d5daee4c9a8   2 days ago     2.48GB
+mirpicard        f232966          950734544895   2 days ago     2.79GB
+mirhtseq         f232966          77aad0acbd29   2 days ago     3.18GB
+mirfastqc        f232966          02bb7fc839a8   2 days ago     2.3GB
+mirpandas        f232966          f8b2d0263755   2 days ago     2.24GB
+mircheckfastq    f232966          bc64d4ee8e90   2 days ago     3.13GB
+mirbase          f232966          645458a5771d   2 days ago     1.13GB
+```
 ### Option 2: Manual Build
-1. The first image to build is the base image `mirbase` from which the other images build from:
+1. The first image to build is the base image `mirbase` from which the other images 
+build from. Replace <tag> with the desired `tag` name, e.g. the commit tag or `latest`:
 ```
 % cd docker-bioinfo-tools/mirbase
-% docker build -t mirbase:latest - < Dockerfile
+% docker build -t mirbase:<tag> - < Dockerfile
 ```
-2. Confirm that the `mirbase` image was created
+
+2. Confirm that the `mirbase` image was created:
 ```
  % docker image ls
 REPOSITORY          TAG       IMAGE ID       CREATED          SIZE
@@ -37,15 +99,15 @@ mirbase             latest    781f7ea3283c   17 seconds ago   791MB
 If using `Docker Desktop` on a Mac, the images can also be see from the 
 `Images on disk` page accessed by navigating via `Images` from the sidebar.
 
-3. Then build the remaining images by navigating to the appropriate `image_name`
+3. Build the remaining images by navigating to the appropriate `image_name`
 folder in this repo and building the Dockerfile:
 ```
 % cd docker-bioinfo-tools/<image_name>
 % docker build -t <image_name>:latest - < Dockerfile
 ```
 
-## Run an Image
-1. To run an image,
+## Running a Container
+1. To run a container from an image, execute the following command:
 ```
 docker run <image_name>
 ```
