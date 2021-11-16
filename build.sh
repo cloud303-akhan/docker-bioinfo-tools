@@ -16,7 +16,7 @@ make_image() {
 	echo "\n>> Creating image $1" && \
 	remove_old_images $1 $2 && \
 	docker build -t $1:$2 --build-arg GIT_COMMIT=$2 - < $1/Dockerfile && \
-	echo "***--> COMPLETE!"
+	echo "$1 COMPLETE!"
 }
 
 make_derived_images () {
@@ -29,3 +29,5 @@ make_derived_images () {
 
 commit=`git log -1 --format=%h`
 make_image mirbase $commit && make_derived_images $commit
+wait
+echo "All done!"
