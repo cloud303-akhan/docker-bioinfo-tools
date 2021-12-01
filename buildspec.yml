@@ -13,8 +13,10 @@ phases:
   build: 
     commands:
       - PROJECTS=($(ls -d */ | tr -d /))
-      - for project in "${PROJECTS[@]}";
+      - |
+        for project in "${PROJECTS[@]}";
          do
+          echo $project;
           $PROJECT_URI=$ECR_REPOSITORY_URI/$project;
           docker build -t $project -f $project/Dockerfile .;
           docker tag $project $PROJECT_URI:release-$CODEBUILD_BUILD_NUMBER;
