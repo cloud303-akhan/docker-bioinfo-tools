@@ -1,0 +1,24 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+  pre_build:    
+    commands:
+      - ECR_REPOSITORY_URI=${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+  build: 
+    commands:
+      - PROJECTS=($(ls -d */ | tr -d /))
+      - for project in "${PROJECTS[@]}"
+         do
+          $PROJECT_URI=$ECR_REPOSITORY_URI/$project
+          docker build -t $project -f $project/Dockerfile .
+          docker tag $project $PROJECT_URI:release-$CODEBUILD_BUILD_NUMBER
+          docker tag $project $PROJECT_URI:latest
+          docker push $PROJECT_URI
+         done
+      - 
+
+      
