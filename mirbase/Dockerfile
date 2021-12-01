@@ -1,4 +1,5 @@
-FROM amazonlinux:2.0.20210721.2
+ARG BASE_IMAGE=273623292002.dkr.ecr.us-west-2.amazonaws.com/mirbase:1-12-2021-amzlinux
+FROM ${BASE_IMAGE}
 
 # metadata
 LABEL base.image="amazonlinux:2.0.20210721.2"
