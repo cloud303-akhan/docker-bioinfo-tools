@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-
+ECR_REPOSITORY_URI=273623292002.dkr.ecr.us-west-2.amazonaws.com
 PROJECTS=($(ls -d */ | tr -d /))
 COMMIT_HASH=$(git rev-parse --short HEAD)
 

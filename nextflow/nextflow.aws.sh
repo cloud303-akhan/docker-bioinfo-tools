@@ -84,10 +84,12 @@ cd  /mnt/efs/$GUID
 
 export NF_WORKDIR=/mnt/efs/$GUID
 export OUTDIR=$NF_WORKDIR/output
+# export TMPDIR=$NF_WORKDIR/tmp
 
 # Create Dependency Folders
 mkdir -p $FASTQ_DIR || error_exit "Failed to create fastq folder."
 mkdir -p $REF_DIR || error_exit "Failed to create ref folder."
+# mkdir -p $TMPDIR || error_exit "Failed to create TMPDIR folder."
 
 
 echo "== Syncing fastq files =="
@@ -137,7 +139,6 @@ function cleanup() {
 
     show_log
     preserve_session
-
     echo "=== Bye! ==="
 }
 
@@ -167,10 +168,10 @@ cat $NF_WORKDIR/src/nextflow.config
 echo "== Set Workspace for dockworker =="
 chown -R dockworker:dockerunion /mnt/efs
 
-echo "== Switch User =="
-su dockworker -p
-export TMPDIR=$NF_WORKDIR/tmp
-export JAVA_HOM=/usr/lib/jvm/jre-openjdk/
+# echo "== Switch User =="
+# su dockworker -p
+# export HOME=$NF_WORKDIR
+# export JAVA_HOM=/usr/lib/jvm/jre-openjdk/
 
 echo "=== ENVIRONMENT ==="
 printenv

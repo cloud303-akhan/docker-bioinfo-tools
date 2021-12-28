@@ -14,7 +14,7 @@ RUN yum install -y wget gzip which procps make
 
 RUN chmod 777 /opt/
 
-USER dockworker
+USER root
 
 # Install miniconda (from https://fabiorosado.dev/blog/install-conda-in-docker/)
 ENV CONDA_DIR /opt/conda
