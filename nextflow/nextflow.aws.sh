@@ -8,12 +8,59 @@
 #  * NF_WORKDIR: where intermmediate results are stored
 
 set -e  # fail on any error
+error_exit () {
+  echo "${BASENAME} - ${1}" >&2
+  cleanup
+  exit 1
+}
+# Usage Information
+usage () {
+  if [ "${#@}" -ne 0 ]; then
+    echo "* ${*}"
+    echo
+  fi
+  cat <<ENDUSAGE
+Usage:
+export FASTQ_DIR_S3="s3://my-bucket"
+export REF_FILES_DIR_S3="s3://my-bucket"
+export NF_LOGSDIR="s3://my-bucket"
+export DOCKER_TAG="release-xxx"
+export NF_JOB_QUEUE="arn:xxx"
+export JOB_ROLE_ARN="arn:xxx"
+ENDUSAGE
+
+  exit 2
+}
+
+
+# Check what environment variables are set
+if [ -z "${DOCKER_TAG}" ]; then
+  usage "DOCKER_TAG not set, unable to determine DOCKER_TAG"
+fi
+if [ -z "${NF_JOB_QUEUE}" ]; then
+  usage "NF_JOB_QUEUE not set, unable to determine NF_JOB_QUEUE"
+fi
+if [ -z "${JOB_ROLE_ARN}" ]; then
+  usage "FASTQ_DIR_S3 not set, unable to determine JOB_ROLE_ARN"
+fi
+if [ -z "${FASTQ_DIR_S3}" ]; then
+  usage "FASTQ_DIR_S3 not set, unable to determine fastq dir files"
+fi
+
+if [ -z "${REF_FILES_DIR_S3}" ]; then
+  usage "REF_FILES_DIR_S3 not set, unable to determine ref files"
+fi
+
+if [ -z "${NF_LOGSDIR}" ]; then
+  usage "NF_LOGSDIR not set, unable to determine NF_LOGSDIR"
+fi
+
+export FASTQ_DIR=/mnt/efs$(echo "${FASTQ_DIR_S3#*/}")
+export REF_DIR=/mnt/efs$(echo "${REF_FILES_DIR_S3#*/}")
 
 DEFAULT_AWS_CLI_PATH=/opt/aws-cli/bin/aws
-AWS_CLI_PATH=${JOB_AWS_CLI_PATH:-$DEFAULT_AWS_CLI_PATH}
+export AWS_CLI_PATH=${JOB_AWS_CLI_PATH:-$DEFAULT_AWS_CLI_PATH}
 
-echo "=== ENVIRONMENT ==="
-printenv
 
 echo "=== RUN COMMAND ==="
 echo "$@"
@@ -31,35 +78,26 @@ GUID="$AWS_BATCH_JOB_ID/$AWS_BATCH_JOB_ATTEMPT"
 if [ "$GUID" = "/" ]; then
     GUID=`date | md5sum | cut -d " " -f 1`
 fi
+# Workspace
+mkdir -p /mnt/efs/$GUID
+cd  /mnt/efs/$GUID
 
-mkdir -p /opt/work/$GUID
-cd /opt/work/$GUID
+export NF_WORKDIR=/mnt/efs/$GUID
+export OUTDIR=$NF_WORKDIR/output
+
+# Create Dependency Folders
+mkdir -p $FASTQ_DIR || error_exit "Failed to create fastq folder."
+mkdir -p $REF_DIR || error_exit "Failed to create ref folder."
+
+
+echo "== Syncing fastq files =="
+aws s3 sync --no-progress $FASTQ_DIR_S3 $FASTQ_DIR
+
+echo "== Syncing ref files =="
+aws s3 sync --no-progress $REF_FILES_DIR_S3 $REF_DIR
 
 # Create the default config using environment variables
 # passed into the container
-NF_CONFIG=./nextflow.config
-echo "Creating config file: $NF_CONFIG"
-
-# To figure out - batch volumes 
-cat << EOF > $NF_CONFIG
-workDir = "$NF_WORKDIR"
-process.executor = "awsbatch"
-process.queue = "$NF_JOB_QUEUE"
-aws.batch.cliPath = "$AWS_CLI_PATH"
-EOF
-#aws.batch.jobRole = 
-
-if [[ "$EFS_MOUNT" != "" ]]
-then
-    echo aws.batch.volumes = [\"/mnt/efs\"] >> $NF_CONFIG
-fi
-
-if [[ "$JOB_ROLE_ARN" != "" ]]
-then
-    echo aws.batch.jobRole = \""$JOB_ROLE_ARN"\" >> $NF_CONFIG
-fi
-echo "=== CONFIGURATION ==="
-cat ./nextflow.config
 
 # stage in session cache
 # .nextflow directory holds all session information for the current and past runs.
@@ -121,11 +159,21 @@ trap "cancel; cleanup" TERM
 trap "cleanup" EXIT
 
 # stage workflow definition
-if [[ "$NEXTFLOW_PROJECT" =~ ^s3://.* ]]; then
-    echo "== Staging S3 Project =="
-    aws s3 sync --no-progress --exclude 'runs/*' --exclude '.*' $NEXTFLOW_PROJECT ./project
-    NEXTFLOW_PROJECT=./project
-fi
+echo "== Staging S3 Project =="
+aws s3 sync --no-progress $NEXTFLOW_PROJECT .
+NEXTFLOW_PROJECT=$NF_WORKDIR/src/submit_samples.nf
+cat $NF_WORKDIR/src/nextflow.config
+
+echo "== Set Workspace for dockworker =="
+chown -R dockworker:dockerunion /mnt/efs
+
+echo "== Switch User =="
+su dockworker -p
+export TMPDIR=$NF_WORKDIR/tmp
+export JAVA_HOM=/usr/lib/jvm/jre-openjdk/
+
+echo "=== ENVIRONMENT ==="
+printenv
 
 echo "== Running Workflow =="
 echo "nextflow run $NEXTFLOW_PROJECT $NEXTFLOW_PARAMS"

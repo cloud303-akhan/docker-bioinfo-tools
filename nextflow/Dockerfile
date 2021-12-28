@@ -20,14 +20,23 @@ RUN curl -s "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/
  && /tmp/aws/install -b /usr/bin \
  && rm -rf /tmp/aws*
 
-ENV JAVA_HOME /usr/lib/jvm/jre-openjdk/
+# Add dockworker
+RUN yum -y install shadow-utils
+RUN useradd dockworker --uid 1018
+RUN groupadd dockerunion --gid 1019
+RUN usermod -g dockerunion dockworker
+RUN yum install -y wget gzip which procps make
 
-# invoke nextflow once to download dependencies
-RUN nextflow -version
+RUN chmod 777 /opt/
 
 # install a custom entrypoint script that handles being run within an AWS Batch Job
 COPY nextflow.aws.sh /opt/bin/nextflow.aws.sh
 RUN chmod +x /opt/bin/nextflow.aws.sh
+
+ENV JAVA_HOME /usr/lib/jvm/jre-openjdk/
+
+# invoke nextflow once to download dependencies
+RUN nextflow -version
 
 WORKDIR /opt/work
 ENTRYPOINT ["/opt/bin/nextflow.aws.sh"]
