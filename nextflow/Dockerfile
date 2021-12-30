@@ -1,8 +1,8 @@
 # use the upstream nextflow container as a base image
-ARG VERSION=1-12-2021-base
+ARG VERSION=30-12-2021-base
 FROM 273623292002.dkr.ecr.us-west-2.amazonaws.com/nextflow:${VERSION} AS build
 
-FROM amazonlinux:2 AS final
+FROM 273623292002.dkr.ecr.us-west-2.amazonaws.com/mirbase:1-12-2021-amzlinux AS final
 COPY --from=build /usr/local/bin/nextflow /usr/bin/nextflow
 
 RUN yum update -y \

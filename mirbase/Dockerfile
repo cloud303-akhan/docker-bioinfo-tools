@@ -14,7 +14,7 @@ RUN yum install -y wget gzip which procps make
 
 RUN chmod 777 /opt/
 
-USER root
+USER dockworker
 
 # Install miniconda (from https://fabiorosado.dev/blog/install-conda-in-docker/)
 ENV CONDA_DIR /opt/conda
@@ -26,5 +26,5 @@ ENV PATH=$CONDA_DIR/bin:$PATH
 RUN conda config --add channels bioconda
 RUN conda config --add channels conda-forge
 
-ENTRYPOINT ["/bin/bash", "-l", "-c"]
+CMD ["/bin/bash"]
 

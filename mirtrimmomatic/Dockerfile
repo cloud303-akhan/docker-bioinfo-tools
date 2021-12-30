@@ -8,4 +8,4 @@ WORKDIR /pipeline
 
 RUN conda install -y python=3.6 trimmomatic=0.39
 
-ENTRYPOINT ["/bin/bash", "-l", "-c"]
+CMD ["/bin/bash"]

@@ -55,6 +55,13 @@ if [ -z "${NF_LOGSDIR}" ]; then
   usage "NF_LOGSDIR not set, unable to determine NF_LOGSDIR"
 fi
 
+if [ -z "${NF_WORKDIR_S3}" ]; then
+  usage "NF_WORKDIR not set, unable to determine NF_LOGSDIR"
+fi
+
+if [ -z "${OUT_DIR_S3}" ]; then
+  usage "OUTDIR not set, unable to determine NF_LOGSDIR"
+fi
 export FASTQ_DIR=/mnt/efs$(echo "${FASTQ_DIR_S3#*/}")
 export REF_DIR=/mnt/efs$(echo "${REF_FILES_DIR_S3#*/}")
 
@@ -82,14 +89,12 @@ fi
 mkdir -p /mnt/efs/$GUID
 cd  /mnt/efs/$GUID
 
-export NF_WORKDIR=/mnt/efs/$GUID
-export OUTDIR=$NF_WORKDIR/output
-# export TMPDIR=$NF_WORKDIR/tmp
+export NF_WORKDIR=$NF_WORKDIR_S3
+export OUTDIR=$OUT_DIR_S3
 
 # Create Dependency Folders
 mkdir -p $FASTQ_DIR || error_exit "Failed to create fastq folder."
 mkdir -p $REF_DIR || error_exit "Failed to create ref folder."
-# mkdir -p $TMPDIR || error_exit "Failed to create TMPDIR folder."
 
 
 echo "== Syncing fastq files =="
@@ -161,17 +166,19 @@ trap "cleanup" EXIT
 
 # stage workflow definition
 echo "== Staging S3 Project =="
-aws s3 sync --no-progress $NEXTFLOW_PROJECT .
-NEXTFLOW_PROJECT=$NF_WORKDIR/src/submit_samples.nf
-cat $NF_WORKDIR/src/nextflow.config
+if [[ "$NEXTFLOW_PROJECT" =~ ^s3://.* ]]; then
+    echo "== Staging S3 Project =="
+    aws s3 sync --only-show-errors $NEXTFLOW_PROJECT ./project
+    NEXTFLOW_PROJECT=./project
+fi
 
 echo "== Set Workspace for dockworker =="
 chown -R dockworker:dockerunion /mnt/efs
 
-# echo "== Switch User =="
-# su dockworker -p
-# export HOME=$NF_WORKDIR
-# export JAVA_HOM=/usr/lib/jvm/jre-openjdk/
+echo "== Switch User =="
+su dockworker -p
+export HOME=$NF_WORKDIR
+export JAVA_HOM=/usr/lib/jvm/jre-openjdk/
 
 echo "=== ENVIRONMENT ==="
 printenv
