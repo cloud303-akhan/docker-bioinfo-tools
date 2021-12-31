@@ -56,11 +56,11 @@ if [ -z "${NF_LOGSDIR}" ]; then
 fi
 
 if [ -z "${NF_WORKDIR_S3}" ]; then
-  usage "NF_WORKDIR not set, unable to determine NF_LOGSDIR"
+  usage "NF_WORKDIR not set, unable to determine NF_WORKDIR_S3"
 fi
 
 if [ -z "${OUT_DIR_S3}" ]; then
-  usage "OUTDIR not set, unable to determine NF_LOGSDIR"
+  usage "NF_WORKDIR_S3 not set, unable to determine NF_WORKDIR_S3"
 fi
 export FASTQ_DIR=/mnt/efs$(echo "${FASTQ_DIR_S3#*/}")
 export REF_DIR=/mnt/efs$(echo "${REF_FILES_DIR_S3#*/}")
@@ -144,6 +144,7 @@ function cleanup() {
 
     show_log
     preserve_session
+    rm -rf /mnt/efs/$AWS_BATCH_JOB_ID
     echo "=== Bye! ==="
 }
 
@@ -171,14 +172,14 @@ if [[ "$NEXTFLOW_PROJECT" =~ ^s3://.* ]]; then
     aws s3 sync --only-show-errors $NEXTFLOW_PROJECT ./project
     NEXTFLOW_PROJECT=./project
 fi
+export HOME=/mnt/efs/$GUID
 
-echo "== Set Workspace for dockworker =="
-chown -R dockworker:dockerunion /mnt/efs
+# echo "== Set Workspace for dockworker =="
+# chown -R dockworker:dockerunion /mnt/efs
 
-echo "== Switch User =="
-su dockworker -p
-export HOME=$NF_WORKDIR
-export JAVA_HOM=/usr/lib/jvm/jre-openjdk/
+# echo "== Switch User =="
+# su dockworker -p
+# export JAVA_HOM=/usr/lib/jvm/jre-openjdk/
 
 echo "=== ENVIRONMENT ==="
 printenv

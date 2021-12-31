@@ -27,7 +27,7 @@ RUN cargo install --git https://github.com/stjude/fqlib.git --tag v0.7.0
 RUN cp -r /root/.cargo/bin/* /usr/local/bin
 
 # Install biopet-validatefastq
-USER dockworker
+USER root
 WORKDIR /pipeline
 RUN conda install python=3.6 biopet-validatefastq=0.1.1
 
