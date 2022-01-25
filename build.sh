@@ -30,4 +30,4 @@ for project in "${PROJECTS[@]}";
 
 done
 
-aws ssm put-parameter --overwrite --name /VERSION/DOCKER_RUNTIME --value $COMMIT_HASH
+aws ssm put-parameter --overwrite --name /VERSION/DOCKER_RUNTIME --value release-$COMMIT_HASH
