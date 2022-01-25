@@ -27,14 +27,16 @@ RUN groupadd dockerunion --gid 1019
 RUN usermod -g dockerunion dockworker
 RUN yum install -y wget gzip which procps make
 
+
 RUN chmod 777 /opt/
+USER dockworker
 
 # install a custom entrypoint script that handles being run within an AWS Batch Job
-COPY nextflow.aws.sh /opt/bin/nextflow.aws.sh
+COPY  --chown=dockworker nextflow.aws.sh /opt/bin/nextflow.aws.sh
 RUN chmod +x /opt/bin/nextflow.aws.sh
 
 ENV JAVA_HOME /usr/lib/jvm/jre-openjdk/
-
+ENV TMPDIR=/tmp
 # invoke nextflow once to download dependencies
 RUN nextflow -version
 
