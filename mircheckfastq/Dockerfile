@@ -5,7 +5,7 @@ LABEL git_commit=$GIT_COMMIT
 LABEL repo="https://gitlab.com/Mirvie/docker-bioinfo-tools"
 
 # Install fq. Rust installation adapted from https://hub.docker.com/r/liuchong/rustup/dockerfile.
-USER dockworker
+USER root
 WORKDIR /root
 RUN yum install -y \
     ca-certificates curl file \
