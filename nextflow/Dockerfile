@@ -24,12 +24,12 @@ RUN curl -s "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/
 RUN yum -y install shadow-utils
 RUN useradd dockworker --uid 1018
 RUN groupadd dockerunion --gid 1019
-RUN usermod -g dockerunion dockworker
+RUN usermod -g dockerunion -G root dockworker
 RUN yum install -y wget gzip which procps make
 
 
 RUN chmod 777 /opt/
-USER dockworker
+USER root
 
 # install a custom entrypoint script that handles being run within an AWS Batch Job
 COPY  --chown=dockworker nextflow.aws.sh /opt/bin/nextflow.aws.sh
