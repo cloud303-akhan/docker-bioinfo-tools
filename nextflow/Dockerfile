@@ -32,7 +32,7 @@ RUN chmod 777 /opt/
 USER root
 
 # install a custom entrypoint script that handles being run within an AWS Batch Job
-COPY  --chown=dockworker nextflow.aws.sh /opt/bin/nextflow.aws.sh
+COPY ./nextflow.aws.sh /opt/bin/nextflow.aws.sh
 RUN chmod +x /opt/bin/nextflow.aws.sh
 
 ENV JAVA_HOME /usr/lib/jvm/jre-openjdk/
