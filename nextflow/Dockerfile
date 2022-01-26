@@ -36,7 +36,7 @@ COPY ./nextflow.aws.sh /opt/bin/nextflow.aws.sh
 RUN chmod +x /opt/bin/nextflow.aws.sh
 
 ENV JAVA_HOME /usr/lib/jvm/jre-openjdk/
-ENV TMPDIR=/tmp
+# ENV TMPDIR=/tmp
 # invoke nextflow once to download dependencies
 RUN nextflow -version
 
