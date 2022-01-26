@@ -9,7 +9,7 @@ WORKDIR /pipeline
 RUN yum -y install shadow-utils
 RUN useradd dockworker --uid 1018
 RUN groupadd dockerunion --gid 1019
-RUN usermod -g dockerunion dockworker
+RUN usermod -g dockerunion -G root dockworker
 RUN yum install -y wget gzip which procps make
 
 RUN chmod 777 /opt/
