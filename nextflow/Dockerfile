@@ -24,7 +24,7 @@ RUN curl -s "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/
 RUN yum -y install shadow-utils
 RUN useradd dockworker --uid 1018
 RUN groupadd dockerunion --gid 1019
-RUN usermod -g dockerunion -G root dockworker
+RUN usermod -G dockerunion,root  dockworker
 RUN yum install -y wget gzip which procps make
 
 
