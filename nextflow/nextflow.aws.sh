@@ -144,7 +144,7 @@ function cleanup() {
 
     show_log
     preserve_session
-    rm -rf /mnt/efs/$AWS_BATCH_JOB_ID
+    # rm -rf /mnt/efs/$AWS_BATCH_JOB_ID
     echo "=== Bye! ==="
 }
 
