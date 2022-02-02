@@ -80,7 +80,7 @@ NEXTFLOW_PARAMS="$@"
 # To avoid file path clobbering use the JobID and JobAttempt
 # to create a unique path. This is important if /opt/work
 # is mapped to a filesystem external to the container
-GUID="$AWS_BATCH_JOB_ID/$AWS_BATCH_JOB_ATTEMPT"
+export GUID="$AWS_BATCH_JOB_ID/$AWS_BATCH_JOB_ATTEMPT"
 
 if [ "$GUID" = "/" ]; then
     GUID=`date | md5sum | cut -d " " -f 1`
@@ -144,7 +144,7 @@ function cleanup() {
 
     show_log
     preserve_session
-    # rm -rf /mnt/efs/$AWS_BATCH_JOB_ID
+    rm -rf /mnt/efs/$AWS_BATCH_JOB_ID
     echo "=== Bye! ==="
 }
 
@@ -170,6 +170,8 @@ echo "== Staging S3 Project =="
 if [[ "$NEXTFLOW_PROJECT" =~ ^s3://.* ]]; then
     echo "== Staging S3 Project =="
     aws s3 sync --only-show-errors $NEXTFLOW_PROJECT ./project
+    sed -i "s|<replace-guid>|$GUID|" ./project/nextflow.config
+    mkdir -p pipeline
     NEXTFLOW_PROJECT=./project
 fi
 export HOME=/mnt/efs/$GUID
