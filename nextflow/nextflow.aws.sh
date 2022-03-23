@@ -120,6 +120,17 @@ function preserve_session() {
         aws s3 sync --no-progress .nextflow $NF_LOGSDIR/.nextflow
     fi
 
+    if [-f report.html ]; then
+      echo "== Preserving report html file =="
+      aws s3 cp --no-progress report.html $OUT_DIR_S3/report.html
+    fi
+
+    if [-f dag.png ]; then
+      echo "== Preserving dag png file =="
+      aws s3 cp --no-progress dag.png $OUT_DIR_S3/dag.png
+    fi
+
+
     # .nextflow.log file has more detailed logging from the workflow run and is
     # nominally unique per run.
     #
@@ -128,6 +139,8 @@ function preserve_session() {
     if [ -f .nextflow.log ]; then
         echo "== Preserving Session Log =="
         aws s3 cp --no-progress .nextflow.log $NF_LOGSDIR/.nextflow.log.${GUID/\//.}
+        aws s3 cp --no-progress .nextflow.log $OUT_DIR_S3/.nextflow.log.${GUID/\//.}
+
     fi
 }
 
@@ -142,7 +155,7 @@ function cleanup() {
     set -e
     echo "=== Running Cleanup ==="
 
-    show_log
+    #show_log
     preserve_session
     rm -rf /mnt/efs/$AWS_BATCH_JOB_ID
     echo "=== Bye! ==="
