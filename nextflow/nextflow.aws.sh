@@ -130,6 +130,11 @@ function preserve_session() {
       aws s3 cp --no-progress dag.png $OUT_DIR_S3/dag.png
     fi
 
+    if [-f environment-version.txt ]; then
+      echo "== Preserving environment-version.txt file =="
+      aws s3 cp --no-progress environment-version.txt $OUT_DIR_S3/environment-version.txt.${GUID/\//.}
+    fi
+
 
     # .nextflow.log file has more detailed logging from the workflow run and is
     # nominally unique per run.
@@ -183,7 +188,6 @@ echo "== Staging S3 Project =="
 if [[ "$NEXTFLOW_PROJECT" =~ ^s3://.* ]]; then
     echo "== Staging S3 Project =="
     aws s3 sync --only-show-errors $NEXTFLOW_PROJECT ./project
-    sed -i "s|<replace-guid>|$GUID|" ./project/nextflow.config
     mkdir -p pipeline
     NEXTFLOW_PROJECT=./project
 fi
@@ -198,6 +202,7 @@ export HOME=/mnt/efs/$GUID
 
 echo "=== ENVIRONMENT ==="
 printenv
+printenv > environment-version.txt
 
 echo "== Running Workflow =="
 echo "nextflow run $NEXTFLOW_PROJECT $NEXTFLOW_PARAMS"
