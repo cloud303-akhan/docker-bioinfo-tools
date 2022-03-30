@@ -81,7 +81,7 @@ NEXTFLOW_PARAMS="$@"
 # to create a unique path. This is important if /opt/work
 # is mapped to a filesystem external to the container
 export GUID="$AWS_BATCH_JOB_ID/$AWS_BATCH_JOB_ATTEMPT"
-
+export NF_CFRNA_VERSION=$NEXTFLOW_PROJECT
 if [ "$GUID" = "/" ]; then
     GUID=`date | md5sum | cut -d " " -f 1`
 fi
