@@ -120,17 +120,17 @@ function preserve_session() {
         aws s3 sync --no-progress .nextflow $NF_LOGSDIR/.nextflow
     fi
 
-    if [-f report.html ]; then
+    if [ -f report.html ]; then
       echo "== Preserving report html file =="
       aws s3 cp --no-progress report.html $OUT_DIR_S3/report.html
     fi
 
-    if [-f dag.png ]; then
+    if [ -f dag.png ]; then
       echo "== Preserving dag png file =="
       aws s3 cp --no-progress dag.png $OUT_DIR_S3/dag.png
     fi
 
-    if [-f environment-version.txt ]; then
+    if [ -f environment-version.txt ]; then
       echo "== Preserving environment-version.txt file =="
       aws s3 cp --no-progress environment-version.txt $OUT_DIR_S3/environment-version.txt.${GUID/\//.}
     fi
