@@ -75,12 +75,15 @@ echo "$@"
 NEXTFLOW_PROJECT=$1
 shift
 NEXTFLOW_PARAMS="$@"
+TASK_ID=$(curl -s "$ECS_CONTAINER_METADATA_URI_V4/task" \
+  | jq -r ".TaskARN" \
+  | cut -d "/" -f 3)
 
 # AWS Batch places multiple jobs on an instance
 # To avoid file path clobbering use the JobID and JobAttempt
 # to create a unique path. This is important if /opt/work
 # is mapped to a filesystem external to the container
-export GUID="$AWS_BATCH_JOB_ID/$AWS_BATCH_JOB_ATTEMPT"
+export GUID="$TASK_ID/$AWS_BATCH_JOB_ATTEMPT"
 export NF_CFRNA_VERSION=$NEXTFLOW_PROJECT
 if [ "$GUID" = "/" ]; then
     GUID=`date | md5sum | cut -d " " -f 1`
@@ -162,7 +165,7 @@ function cleanup() {
 
     #show_log
     preserve_session
-    rm -rf /mnt/efs/$AWS_BATCH_JOB_ID
+    rm -rf /mnt/efs/$TASK_ID
     echo "=== Bye! ==="
 }
 

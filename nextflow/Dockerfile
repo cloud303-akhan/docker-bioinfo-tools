@@ -11,6 +11,8 @@ RUN yum update -y \
     hostname \
     java \
     unzip \
+    graphviz \
+    jq \
  && yum clean -y all
 RUN rm -rf /var/cache/yum
 
