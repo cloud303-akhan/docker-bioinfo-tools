@@ -107,9 +107,9 @@ folder in this repo and building the Dockerfile:
 ```
 
 ## Running a Container
-1. To run a container from an image, execute the following command:
+1. To run a container in interactive mode, stepping into a bash shell, execute the following command:
 ```
-docker run <image_name>
+docker run -it <image_name> bash
 ```
 Alternatively in `Docker Desktop`, click the `Run` button next to each image 
 via the `Images on disk` page.
