@@ -44,8 +44,7 @@ The Dockerfiles need to be constructed into images before containers can be run.
 are two options for building the images in this repo.
 
 ### Option 1: Automatic Build
-The build script will build all the containers needed for `nf-crna` pipeline (i.e. will
-skip build for `mirbclconvert`), starting first with 
+The build script will build all the containers needed for the `nf-crna` pipeline and `mirbclconvert`, starting first with 
 `mirbase` from which all other images are built. The build script will first remove
 images that match the name and tag prior to build images tagged by the commit of this
 repo.
@@ -66,7 +65,7 @@ building the new image.
 sh build.sh
 ```
 
-3. Check that the images are created with teh correct tags pulled from the commit.
+3. Check that the images are created with the correct tags pulled from the commit.
 ```
 $ docker image ls
 REPOSITORY       TAG              IMAGE ID       CREATED        SIZE
@@ -104,6 +103,12 @@ folder in this repo and building the Dockerfile:
 ```
 % cd docker-bioinfo-tools/<image_name>
 % docker build -t <image_name>:latest - < Dockerfile
+```
+If there are local files that need to be copied into the container, these files will need to 
+be in the same dir as the Dockerfile and you will need to pass the 
+full path of the enclosing dir to `docker build`:
+```
+% docker build -t <image_name>:latest /PATH/TO/DOCKERFILE/PARENT/DIR
 ```
 
 ## Running a Container
