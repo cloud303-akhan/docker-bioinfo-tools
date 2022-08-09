@@ -12,7 +12,7 @@ remove_old_images () {
 }
 
 make_image() {
-	# $1 = image name, $2 = git commit, $3 = absolute path to script dir
+	# $1 = image name, $2 = git commit, $3 = full path to script dir
 	echo "\n>> Creating image $1" && \
 	remove_old_images $1 $2 && \
 	docker build -t $1:$2 --build-arg GIT_COMMIT=$2 $3/$1 && \
@@ -20,7 +20,7 @@ make_image() {
 }
 
 make_derived_images () {
-	# Once mirbase is made, parallelize, $1 = git commit
+	# Once mirbase is made, parallelize, $1 = git commit, $2 full path to script dir
 	for image in mircheckfastq mirchecksumdir mirpandas mirfastqc mirhtseq mirpicard mirrseqc mirsamtools mirstar mirtrimmomatic mirmultiqc mirbclconvert
 	do
 		make_image $image $1 $2 &
