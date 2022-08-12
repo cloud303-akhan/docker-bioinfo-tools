@@ -26,37 +26,66 @@ def get_version(command, image, tag = ""):
     return version
     
 def test_mirbase():
-    conda_version = get_version("conda -V", "mirbase")
-    assert conda_version.stdout.strip() == "conda 4.10.3"
+    version = get_version("conda -V", "mirbase")
+    print(version.args)
+    assert version.stdout.strip() == "conda 4.10.3"
 
 def test_mirbclconvert():
-    bclconvert_version = get_version("bcl-convert -V", "mirbclconvert")
-    assert bclconvert_version.stderr.strip().split("\n")[0] == "bcl-convert Version 00.000.000.3.8.2-12-g85770e0b"
+    version = get_version("bcl-convert -V", "mirbclconvert")
+    print(version.args)
+    assert version.stderr.strip().split("\n")[0] == "bcl-convert Version 00.000.000.3.8.2-12-g85770e0b"
+
+def test_mircheckfastq():
+    version = get_version("biopet-validatefastq --version", "mircheckfastq")
+    print(version.args)
+    assert version.stderr.strip() == "Version: 0.1.1"
+
+def test_mirchecksumdir():
+    version = get_version("pip show checksumdir", "mirchecksumdir")
+    print(version.args)
+    assert version.stdout.split("\n")[1].strip() == "Version: 1.2.0"
 
 def test_mirfastqc():
-    fastqc_version = get_version("fastqc -V", "mirfastqc")
-    assert fastqc_version.stdout.strip() == "FastQC v0.11.9"
+    version = get_version("fastqc -V", "mirfastqc")
+    print(version.args)
+    assert version.stdout.strip() == "FastQC v0.11.9"
 
 def test_mirhtseq():
-    htseq_version = get_version("htseq-count --help | tail -1", "mirhtseq")
-    assert htseq_version.stdout.strip() == "Public License v3. Part of the 'HTSeq' framework, version 0.11.2."
+    version = get_version("htseq-count --help | tail -1", "mirhtseq")
+    print(version.args)
+    assert version.stdout.strip() == "Public License v3. Part of the 'HTSeq' framework, version 0.11.2."
+
+def test_mirmultiqc():
+    version = get_version("multiqc --version", "mirmultiqc")
+    print(version.args)
+    assert version.stdout.strip() == "multiqc, version 1.11"
+
+def test_mirpandas():
+    version = get_version("pip show pandas", "mirpandas")
+    print(version.args)
+    assert version.stdout.split("\n")[1].strip() == "Version: 1.3.2"
 
 def test_mirpicard():
-    picard_version = get_version("picard MarkDuplicates --version", "mirpicard")
-    assert picard_version.stderr.strip() == "Version:2.26.0"
+    version = get_version("picard MarkDuplicates --version", "mirpicard")
+    print(version.args)
+    assert version.stderr.strip() == "Version:2.26.0"
 
 def test_mirrseqc():
-    rseqc_version = get_version("inner_distance.py --version", "mirrseqc")
-    assert rseqc_version.stdout.strip() == "inner_distance.py 4.0.0"
+    version = get_version("inner_distance.py --version", "mirrseqc")
+    print(version.args)
+    assert version.stdout.strip() == "inner_distance.py 4.0.0"
 
 def test_mirsamtools():
-    samtools_version = get_version("samtools --version | head -1", "mirsamtools")
-    assert samtools_version.stdout.strip() == "samtools 1.9"
+    version = get_version("samtools --version | head -1", "mirsamtools")
+    print(version.args)
+    assert version.stdout.strip() == "samtools 1.9"
 
 def test_mirstar():
-    star_version = get_version("STAR --version", "mirstar")
-    assert star_version.stdout.strip() == "STAR_2.6.1a_08-27"
+    version = get_version("STAR --version", "mirstar")
+    print(version.args)
+    assert version.stdout.strip() == "STAR_2.6.1a_08-27"
 
 def test_mirtrimmomatic():
-    trimmomatic_version = get_version("trimmomatic PE -version", "mirtrimmomatic")
-    assert trimmomatic_version.stdout.strip() == "0.39"
+    version = get_version("trimmomatic PE -version", "mirtrimmomatic")
+    print(version.args)
+    assert version.stdout.strip() == "0.39"
