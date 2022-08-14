@@ -20,8 +20,11 @@ make_image() {
 }
 
 make_derived_images () {
-	# Once mirbase is made, parallelize, $1 = git commit, $2 full path to script dir
-	for image in mircheckfastq mirchecksumdir mirpandas mirfastqc mirhtseq mirpicard mirrseqc mirsamtools mirstar mirtrimmomatic mirmultiqc mirbclconvert
+	# parallelize once mirbase is made, $1 = git commit, $2=full path to script dir
+    derived_images=(mircheckfastq mirchecksumdir mirpandas mirfastqc mirhtseq 
+        mirpicard mirrseqc mirsamtools mirstar mirtrimmomatic mirmultiqc 
+        mirbclconvert)
+	for image in "${derived_images[@]}"
 	do
 		make_image $image $1 $2 &
 	done
