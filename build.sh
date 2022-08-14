@@ -28,8 +28,8 @@ make_derived_images () {
 }
 
 commit=`git log -1 --format=%h`
-SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
-echo "script dir: $SCRIPT_DIR"
-make_image mirbase $commit $SCRIPT_DIR && make_derived_images $commit $SCRIPT_DIR
+script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+echo "script dir: $script_dir"
+make_image mirbase $commit $script_dir && make_derived_images $commit $script_dir
 wait
 echo "All done!"
