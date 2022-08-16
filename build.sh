@@ -13,7 +13,7 @@ remove_old_images () {
 
 make_image() {
 	# $1 = image name, $2 = git commit, $3 = full path to script dir
-	echo "\n>> Creating image $1" && \
+	echo -e "\n>> Creating image $1" && \
 	remove_old_images $1 $2 && \
 	docker build -t $1:$2 --build-arg GIT_COMMIT=$2 $3/$1 && \
 	echo "$1 COMPLETE!"
