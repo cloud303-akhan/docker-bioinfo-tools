@@ -4,15 +4,15 @@ LABEL repo="https://gitlab.com/Mirvie/docker-bioinfo-tools"
 
 WORKDIR /pipeline
 
-# Add dockworker
 RUN yum -y install shadow-utils
 RUN useradd dockworker --uid 1018
 RUN groupadd dockerunion --gid 1019
 RUN usermod -g dockerunion dockworker
-RUN yum install -y wget gzip which procps make
+RUN yum install -y wget gzip which procps make git
 
 RUN chmod 777 /opt/
 
+# Add dockworker
 USER dockworker
 
 # Install miniconda (from https://fabiorosado.dev/blog/install-conda-in-docker/)
@@ -24,9 +24,6 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py39_4.10.3-Linu
 ENV PATH=$CONDA_DIR/bin:$PATH
 RUN conda config --add channels bioconda
 RUN conda config --add channels conda-forge
-
-# Install git to add hash to python scripts
-RUN conda install -c anaconda git
 
 ENTRYPOINT ["/bin/bash", "-l", "-c"]
 
