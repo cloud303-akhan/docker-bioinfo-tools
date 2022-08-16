@@ -25,5 +25,8 @@ ENV PATH=$CONDA_DIR/bin:$PATH
 RUN conda config --add channels bioconda
 RUN conda config --add channels conda-forge
 
+# Install git to add hash to python scripts
+RUN conda install -c anaconda git
+
 ENTRYPOINT ["/bin/bash", "-l", "-c"]
 
