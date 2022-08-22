@@ -125,3 +125,8 @@ via the `Images on disk` page.
 CONTAINER ID   IMAGE                COMMAND       CREATED              STATUS              PORTS     NAMES
 372065f80e4a   mirsamtools:latest   "/bin/bash"   About a minute ago   Up About a minute             exciting_greider
 ```
+
+## Testing
+Run `pytest` from the root of the repository to run all the tests; test results are output to stdout based on the test config settings in `pytest.ini`.
+
+After running `pytest` to confirm all tests pass, to append the results of the tests to the clinical fetal sex test log on `marge` run `pytest >> /mnt/storage/clinical/fetal_sex/test/docker-bioinfo-tools_test_log.txt`.
