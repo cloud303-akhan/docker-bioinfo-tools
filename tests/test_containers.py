@@ -5,48 +5,32 @@ from datetime import datetime
 from pathlib import Path
 from inspect import getsourcefile
 
-LOG_PATH = "/mnt/storage/clinical/fetal_sex/test/docker-bioinfo-tools_test_log.txt"
-
-def get_log_file_path() -> str:
-    """
-    Check if `LOG_PATH` is writable and return it, otherwise use user's home
-    
-    Returns:
-       string: path to writable log file
-    """
-    if os.access(LOG_PATH, os.W_OK):
-        print("log path:" + LOG_PATH)
-        return LOG_PATH
-    print("log path:" + os.path.expanduser('~'))
-    return os.path.expanduser('~') + "/docker-bioinfo-tools_test_log.txt"
-
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(
     format="%(asctime)-15s [%(levelname)s] %(funcName)s: %(message)s",
     level=logging.INFO,
-    filename=get_log_file_path(),
+    #place log file in user's home dir
+    filename=os.path.expanduser('~') + "/docker-bioinfo-tools_test_log.txt",
     filemode='a'
 )
 
 def get_git_commit_tag() -> str:
     """
-    Attempt to read git commit tag info from `.git` files.
+    Attempt to read git commit tag from the path of this script.
     
     Returns:
        string: the git commit tag or "UNKNOWN"
     """
-    #get path of this script
-    script_path = os.path.dirname(getsourcefile(lambda:0))
-    #script is within `tests` folder; so move up one dir to get git root
-    script_path = os.path.dirname(script_path)
-    git_folder = Path(script_path,'.git')
-    if os.access(git_folder, os.R_OK):
-        head_name = Path(git_folder, 'HEAD').read_text().split('\n')[0].split(' ')[-1]
-        head_ref = Path(git_folder,head_name)
-        if os.access(head_ref, os.R_OK):
-            commit = head_ref.read_text().replace('\n','')[-7:]
-            return commit
-    return "UNKNOWN"
+    bashCommand = "git rev-parse HEAD"
+    process = subprocess.Popen(
+        bashCommand.split(),
+        stdout=subprocess.PIPE,
+    )
+    commit, error = process.communicate()
+    if error is None:
+        return commit.decode("utf-8").strip("\n")[-8:]
+    else:
+        return "UNKNOWN"
             
 def get_newest_tag(image:str, tag:str = "") -> str:
     """
@@ -95,17 +79,18 @@ def get_software_version_in_image(command:str,
     return version
 
 def test_docker():
-    LOGGER.info("starting test on commit [" + get_git_commit_tag() + "]")
+    LOGGER.info(str(datetime.now()) + " starting test on commit [" +
+                get_git_commit_tag() + "]")
     version = subprocess.run(
         "docker --version",
         capture_output=True,
         shell=True,
         text=True)
     assert version.stdout.strip() == "Docker version 20.10.17, build 100c701"
-    LOGGER.info("test passed")
 
 def test_mirbase():
-    LOGGER.info("starting test on commit [" + get_git_commit_tag() + "]")
+    LOGGER.info(str(datetime.now()) + " starting test on commit [" +
+                get_git_commit_tag() + "]")
     version = get_software_version_in_image("conda -V", "mirbase")
     assert version.stdout.strip() == "conda 4.10.3"
     
@@ -117,7 +102,8 @@ def test_mirbclconvert():
     """
     Reads `stderr` to get `bcl-convert` version
     """
-    LOGGER.info("starting test on commit [" + get_git_commit_tag() + "]")
+    LOGGER.info(str(datetime.now()) + " starting test on commit [" +
+                get_git_commit_tag() + "]")
     version = get_software_version_in_image("bcl-convert -V", "mirbclconvert")
     assert version.stderr.strip().split("\n")[0] == \
         "bcl-convert Version 00.000.000.3.8.2-12-g85770e0b"
@@ -126,7 +112,8 @@ def test_mircheckfastq():
     """
     Reads `stderr` for `biopet-validatefastq` version
     """
-    LOGGER.info("starting test on commit [" + get_git_commit_tag() + "]")
+    LOGGER.info(str(datetime.now()) + " starting test on commit [" + 
+                get_git_commit_tag() + "]")
     version = get_software_version_in_image("biopet-validatefastq --version",
                                             "mircheckfastq")
     assert version.stderr.strip() == "Version: 0.1.1"
@@ -135,28 +122,33 @@ def test_mircheckfastq():
     assert version.stdout.strip() == "fq-lint 0.9.1 (2022-02-22)"
 
 def test_mirchecksumdir():
-    LOGGER.info("starting test on commit [" + get_git_commit_tag() + "]")
+    LOGGER.info(str(datetime.now()) + " starting test on commit [" + 
+                get_git_commit_tag() + "]")
     version = get_software_version_in_image("pip show checksumdir", "mirchecksumdir")
     assert version.stdout.split("\n")[1].strip() == "Version: 1.2.0"
 
 def test_mirfastqc():
-    LOGGER.info("starting test on commit [" + get_git_commit_tag() + "]")
+    LOGGER.info(str(datetime.now()) + " starting test on commit [" + 
+                get_git_commit_tag() + "]")
     version = get_software_version_in_image("fastqc -V", "mirfastqc")
     assert version.stdout.strip() == "FastQC v0.11.9"
 
 def test_mirhtseq():
-    LOGGER.info("starting test on commit [" + get_git_commit_tag() + "]")
+    LOGGER.info(str(datetime.now()) + " starting test on commit [" + 
+                get_git_commit_tag() + "]")
     version = get_software_version_in_image("htseq-count --help | tail -1", "mirhtseq")
     assert version.stdout.strip() == \
         "Public License v3. Part of the 'HTSeq' framework, version 0.11.2."
 
 def test_mirmultiqc():
-    LOGGER.info("starting test on commit [" + get_git_commit_tag() + "]")
+    LOGGER.info(str(datetime.now()) + " starting test on commit [" + 
+                get_git_commit_tag() + "]")
     version = get_software_version_in_image("multiqc --version", "mirmultiqc")
     assert version.stdout.strip() == "multiqc, version 1.11"
 
 def test_mirpandas():
-    LOGGER.info("starting test on commit [" + get_git_commit_tag() + "]")
+    LOGGER.info(str(datetime.now()) + " starting test on commit [" + 
+                get_git_commit_tag() + "]")
     version = get_software_version_in_image("pip show pandas", "mirpandas")
     assert version.stdout.split("\n")[1].strip() == "Version: 1.3.2"
 
@@ -164,7 +156,8 @@ def test_mirpicard():
     """
     Reads `stderr` to get picard MarkDuplicates and CollectRnaSeqMetrics versions
     """
-    LOGGER.info("starting test on commit [" + get_git_commit_tag() + "]")
+    LOGGER.info(str(datetime.now()) + " starting test on commit [" + 
+                get_git_commit_tag() + "]")
     version = get_software_version_in_image("picard MarkDuplicates --version",
                                             "mirpicard")
     assert version.stderr.strip() == "Version:2.26.0"
@@ -174,22 +167,26 @@ def test_mirpicard():
     assert version.stderr.strip() == "Version:2.26.0"
 
 def test_mirrseqc():
-    LOGGER.info("starting test on commit [" + get_git_commit_tag() + "]")
+    LOGGER.info(str(datetime.now()) + " starting test on commit [" + 
+                get_git_commit_tag() + "]")
     version = get_software_version_in_image("inner_distance.py --version", "mirrseqc")
     assert version.stdout.strip() == "inner_distance.py 4.0.0"
 
 def test_mirsamtools():
-    LOGGER.info("starting test on commit [" + get_git_commit_tag() + "]")
+    LOGGER.info(str(datetime.now()) + " starting test on commit [" + 
+                get_git_commit_tag() + "]")
     version = get_software_version_in_image("samtools --version | head -1",
                                             "mirsamtools")
     assert version.stdout.strip() == "samtools 1.9"
 
 def test_mirstar():
-    LOGGER.info("starting test on commit [" + get_git_commit_tag() + "]")
+    LOGGER.info(str(datetime.now()) + " starting test on commit [" + 
+                get_git_commit_tag() + "]")
     version = get_software_version_in_image("STAR --version", "mirstar")
     assert version.stdout.strip() == "STAR_2.6.1a_08-27"
 
 def test_mirtrimmomatic():
-    LOGGER.info("starting test on commit [" + get_git_commit_tag() + "]")
+    LOGGER.info(str(datetime.now()) + " starting test on commit [" + 
+                get_git_commit_tag() + "]")
     version = get_software_version_in_image("trimmomatic PE -version", "mirtrimmomatic")
     assert version.stdout.strip() == "0.39"
