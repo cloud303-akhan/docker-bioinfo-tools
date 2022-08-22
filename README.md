@@ -2,13 +2,13 @@
 
 ## Purpose
 The `Nextflow` pipeline relies on the Docker containers in this repo to run its  
-processes. This repo houses the Dockerfiles that creates the Docker containers containing the 
-bioinformatics tools required by the Nextflow scripts, e.g. the preeclampsia Nextflow
-script can be run with Docker containers, see 
+processes. This repo houses the Dockerfiles that creates the Docker containers 
+containing the bioinformatics tools required by the Nextflow scripts, e.g. the 
+preeclampsia Nextflow script can be run with Docker containers, see 
 [Mirvie's nf-cfrna Repo](https://gitlab.com/Mirvie/nf-cfrna)). 
 
 ## Requirements
-Docker must be installed. Run `docker --version` to see if Docker is already installed. 
+Docker must be installed. Run `docker --version` to see if Docker is already installed.
 If not, follow the instructions at https://docs.docker.com/get-docker/ to install it 
 for your OS.
 
@@ -44,10 +44,10 @@ The Dockerfiles need to be constructed into images before containers can be run.
 are two options for building the images in this repo.
 
 ### Option 1: Automatic Build
-The build script will build all the containers needed for the `nf-crna` pipeline and `mirbclconvert`, starting first with 
-`mirbase` from which all other images are built. The build script will first remove
-images that match the name and tag prior to build images tagged by the commit of this
-repo.
+The build script will build all the containers needed for the `nf-crna` pipeline and 
+`mirbclconvert`, starting first with `mirbase` from which all other images are built. 
+The build script will first remove images that match the name and tag prior to build 
+images tagged by the commit of this repo.
 
 NOTES: 
 * `mirrseqc` requires a significant amount of memory to build, so set the 
@@ -104,15 +104,16 @@ folder in this repo and building the Dockerfile:
 % cd docker-bioinfo-tools/<image_name>
 % docker build -t <image_name>:latest - < Dockerfile
 ```
-If there are local files that need to be copied into the container, these files will need to 
-be in the same dir as the Dockerfile and you will need to pass the 
+If there are local files that need to be copied into the container, these files will
+need to be in the same dir as the Dockerfile and you will need to pass the 
 full path of the enclosing dir to `docker build`:
 ```
 % docker build -t <image_name>:latest /PATH/TO/DOCKERFILE/PARENT/DIR
 ```
 
 ## Running a Container
-1. To run a container in interactive mode, stepping into a bash shell, execute the following command:
+1. To run a container in interactive mode, stepping into a bash shell, execute the 
+following command:
 ```
 docker run -it <image_name> bash
 ```
@@ -127,6 +128,12 @@ CONTAINER ID   IMAGE                COMMAND       CREATED              STATUS   
 ```
 
 ## Testing
-Run `pytest` from the root of the repository to run all the tests; test results are output to stdout based on the test config settings in `pytest.ini`.
+Using any user that has `docker run` privileges, run `pytest` from the root of the 
+repository to run all the tests; test results are output to stdout based on the test 
+config settings in `pytest.ini`. If you don't have `pytest` installed you can create
+a conda environment by running `conda create -n pytestenv pytest` and then activating
+it with `conda activate pytestenv`.
 
-After running `pytest` to confirm all tests pass, to append the results of the tests to the clinical fetal sex test log on `marge` run `pytest >> /mnt/storage/clinical/fetal_sex/test/docker-bioinfo-tools_test_log.txt`.
+After running `pytest` to confirm all tests pass, to append the results of the tests to
+the clinical fetal sex test log on `marge` run 
+`pytest >> /mnt/storage/clinical/fetal_sex/test/docker-bioinfo-tools_test_log.txt`.

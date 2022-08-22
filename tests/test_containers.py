@@ -2,8 +2,6 @@ import subprocess
 import os
 import logging
 from datetime import datetime
-from pathlib import Path
-from inspect import getsourcefile
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(
