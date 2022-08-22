@@ -26,10 +26,10 @@ def get_git_commit_tag() -> str:
     )
     commit, error = process.communicate()
     if error is None:
-        return commit.decode("utf-8").strip("\n")[-8:]
+        return commit.decode("utf-8").strip("\n")[8:]
     else:
         return "UNKNOWN"
-            
+
 def get_newest_tag(image:str, tag:str = "") -> str:
     """
     Parse output of `docker image ls` to get newest tag for given docker image
