@@ -26,7 +26,7 @@ def get_git_commit_tag() -> str:
     )
     commit, error = process.communicate()
     if error is None:
-        return commit.decode("utf-8").strip("\n")[8:]
+        return commit.decode("utf-8").strip("\n")[:8]
     else:
         return "UNKNOWN"
 
