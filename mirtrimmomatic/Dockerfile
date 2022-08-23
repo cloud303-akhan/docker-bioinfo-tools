@@ -1,25 +1,11 @@
-FROM mirbase:latest
+ARG GIT_COMMIT
+FROM mirbase:$GIT_COMMIT
 
-# metadata
-LABEL base.image="mirbase"
-LABEL version="0.1"
-LABEL software="mirvie_trimmomatic"
-LABEL software.version="0.1"
-LABEL description="trimmomatic"
-LABEL website="https://gitlab.com/Mirvie/pipe-cfrna"
-LABEL maintainer1="Farooq Siddiqui"
-LABEL maintainer1.email="farooq@mirvie.com"
-LABEL maintainer2="Elaine Gee"
-LABEL maintainer2.email="elaine@mirvie.com"
-LABEL maintainer3="Rory Nolan"
-LABEL maintainer3.email="rory@mirvie.com"
+LABEL git_commit=$GIT_COMMIT
+LABEL repo="https://gitlab.com/Mirvie/docker-bioinfo-tools"
 
 WORKDIR /pipeline
 
-RUN conda install -y trimmomatic
+RUN conda install -y python=3.6 trimmomatic=0.39
 
-## Make RUN commands use the new environment:
-#SHELL ["conda", "run", "-n", "cfRNA", "/bin/bash", "-c"]
-
-# The code to run when container is started:
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/bin/bash", "-l", "-c"]
