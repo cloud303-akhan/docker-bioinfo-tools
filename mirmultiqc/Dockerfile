@@ -6,6 +6,8 @@ LABEL repo="https://gitlab.com/Mirvie/docker-bioinfo-tools"
 
 WORKDIR /pipeline
 
-RUN conda install -y python=3.6 star=2.6.1b
+ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
+
+RUN conda install -y python=3.6 multiqc=1.11
 
 ENTRYPOINT ["/bin/bash", "-l", "-c"]
