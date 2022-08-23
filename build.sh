@@ -12,22 +12,27 @@ remove_old_images () {
 }
 
 make_image() {
-	# $1 = image name, $2 = git commit
-	echo "\n>> Creating image $1" && \
+	# $1 = image name, $2 = git commit, $3 = full path to script dir
+	echo -e "\n>> Creating image $1" && \
 	remove_old_images $1 $2 && \
-	docker build -t $1:$2 --build-arg GIT_COMMIT=$2 - < $1/Dockerfile && \
+	docker build -t $1:$2 --build-arg GIT_COMMIT=$2 $3/$1 && \
 	echo "$1 COMPLETE!"
 }
 
 make_derived_images () {
-	# Once mirbase is made, parallelize, $1 = git commit
-	for image in mircheckfastq mirchecksumdir mirpandas mirfastqc mirhtseq mirpicard mirrseqc mirsamtools mirstar mirtrimmomatic mirmultiqc
+	# parallelize once mirbase is made, $1 = git commit, $2=full path to script dir
+    derived_images=(mircheckfastq mirchecksumdir mirpandas mirfastqc mirhtseq 
+        mirpicard mirrseqc mirsamtools mirstar mirtrimmomatic mirmultiqc 
+        mirbclconvert)
+	for image in "${derived_images[@]}"
 	do
-		make_image $image $1 &
+		make_image $image $1 $2 &
 	done
 }
 
 commit=`git log -1 --format=%h`
-make_image mirbase $commit && make_derived_images $commit
+script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+echo "script dir: $script_dir"
+make_image mirbase $commit $script_dir && make_derived_images $commit $script_dir
 wait
 echo "All done!"
