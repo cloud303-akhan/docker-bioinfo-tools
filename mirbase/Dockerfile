@@ -1,4 +1,5 @@
-FROM amazonlinux:2.0.20210721.2
+ARG BASE_IMAGE=273623292002.dkr.ecr.us-west-2.amazonaws.com/mirbase:1-12-2021-amzlinux
+FROM ${BASE_IMAGE}
 
 LABEL repo="https://gitlab.com/Mirvie/docker-bioinfo-tools"
 
@@ -11,8 +12,13 @@ RUN usermod -g dockerunion dockworker
 RUN yum install -y wget gzip which procps make git
 
 RUN chmod 777 /opt/
+<<<<<<< HEAD
 
 # Add dockworker
+=======
+RUN mkdir -p /pipeline
+RUN chmod 777 /pipeline
+>>>>>>> 67886dac58f9ca4154af899316cd0af9d8cb6c76
 USER dockworker
 
 # Install miniconda (from https://fabiorosado.dev/blog/install-conda-in-docker/)
@@ -27,5 +33,5 @@ ENV PATH=$CONDA_DIR/bin:$PATH
 RUN conda config --add channels bioconda
 RUN conda config --add channels conda-forge
 
-ENTRYPOINT ["/bin/bash", "-l", "-c"]
+CMD ["/bin/bash"]
 

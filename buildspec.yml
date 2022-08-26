@@ -1,0 +1,14 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+  pre_build:    
+    commands:
+      - yum install git -y
+      - ECR_REPOSITORY_URI=${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+  build: 
+    commands:
+      - /bin/bash ./build.sh

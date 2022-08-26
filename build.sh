@@ -1,38 +1,33 @@
 #!/bin/bash
 
-set -e  # fail on any error
+set -e
+ECR_REPOSITORY_URI=273623292002.dkr.ecr.us-west-2.amazonaws.com
+PROJECTS=($(ls -d */ | tr -d /))
+COMMIT_HASH=$(git rev-parse --short HEAD)
 
-remove_old_images () {
-	# $1 = image name, $2 = image tag
-	exist=`docker image inspect $image:$commit >/dev/null 2>&1 && echo yes || echo no`
-	if [ "$exist" = "yes" ]; then
-		echo "Removing previous local image"
-		docker image rm -f $1:$2
+cd mirbase
+docker build -t mirbase:$COMMIT_HASH -f Dockerfile .
+cd ..
+
+
+for project in "${PROJECTS[@]}";
+    do
+	if [[ "$project" == "mirbclconvert" ]]
+	then
+		continue
 	fi
-}
+	echo "############ Bulding $project #############"
+    cd $project/
 
-make_image() {
-	# $1 = image name, $2 = git commit, $3 = full path to script dir
-	echo -e "\n>> Creating image $1" && \
-	remove_old_images $1 $2 && \
-	docker build -t $1:$2 --build-arg GIT_COMMIT=$2 $3/$1 && \
-	echo "$1 COMPLETE!"
-}
+    docker build -t $project --build-arg GIT_COMMIT=$COMMIT_HASH -f Dockerfile .
+    docker tag $project "${ECR_REPOSITORY_URI}/${project}:release-$COMMIT_HASH"
+    docker tag $project "${ECR_REPOSITORY_URI}/${project}:latest"
+    docker push "${ECR_REPOSITORY_URI}/${project}:release-$COMMIT_HASH"
+    docker push "${ECR_REPOSITORY_URI}/${project}:latest"
+	echo "############ Done $project #############"
 
-make_derived_images () {
-	# parallelize once mirbase is made, $1 = git commit, $2=full path to script dir
-    derived_images=(mircheckfastq mirchecksumdir mirpandas mirfastqc mirhtseq 
-        mirpicard mirrseqc mirsamtools mirstar mirtrimmomatic mirmultiqc 
-        mirbclconvert)
-	for image in "${derived_images[@]}"
-	do
-		make_image $image $1 $2 &
-	done
-}
+    cd ..
 
-commit=`git log -1 --format=%h`
-script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
-echo "script dir: $script_dir"
-make_image mirbase $commit $script_dir && make_derived_images $commit $script_dir
-wait
-echo "All done!"
+done
+
+aws ssm put-parameter --overwrite --name /VERSION/DOCKER_RUNTIME --value release-$COMMIT_HASH
