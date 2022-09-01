@@ -12,13 +12,8 @@ RUN usermod -g dockerunion dockworker
 RUN yum install -y wget gzip which procps make git
 
 RUN chmod 777 /opt/
-<<<<<<< HEAD
-
-# Add dockworker
-=======
 RUN mkdir -p /pipeline
 RUN chmod 777 /pipeline
->>>>>>> 67886dac58f9ca4154af899316cd0af9d8cb6c76
 USER dockworker
 
 # Install miniconda (from https://fabiorosado.dev/blog/install-conda-in-docker/)
