@@ -8,7 +8,7 @@ phases:
       - yum install git -y
       - ECR_REPOSITORY_URI=${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
       - echo Logging in to Amazon ECR...
-      - $(aws ecr get-login-password | docker login --username AWS --password-stdin ${ECR_REPOSITORY_URI})
+      - docker login -u AWS -p $(aws ecr get-login-password --region ${AWS_REGION}) ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
   build: 
     commands:
       - /bin/bash ./build.sh
