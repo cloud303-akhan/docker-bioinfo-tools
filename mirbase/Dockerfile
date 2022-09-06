@@ -1,16 +1,18 @@
 ARG AWS_ACCOUNT_ID
-ARG BASE_IMAGE=${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/mirbase:1-12-2021-amzlinux
-FROM ${BASE_IMAGE}
 
-LABEL repo="https://gitlab.com/Mirvie/docker-bioinfo-tools"
+# ARG BASE_IMAGE=${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/mirbase:1-12-2021-amzlinux
+# FROM ${BASE_IMAGE}
 
-WORKDIR /pipeline
+# LABEL repo="https://gitlab.com/Mirvie/docker-bioinfo-tools"
+
+# WORKDIR /pipeline
 
 RUN yum -y install shadow-utils
 RUN useradd dockworker --uid 1018
 RUN groupadd dockerunion --gid 1019
 RUN usermod -g dockerunion dockworker
 RUN yum install -y wget gzip which procps make git
+RUN echo ${AWS_ACCOUNT_ID}
 
 RUN chmod 777 /opt/
 RUN mkdir -p /pipeline
