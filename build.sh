@@ -1,12 +1,18 @@
 #!/bin/bash
 
+# Show env vars
+grep -v '^#' .env
+
+# Export env vars
+export $(grep -v '^#' .env | xargs)
+
 set -e
-ECR_REPOSITORY_URI=273623292002.dkr.ecr.us-west-2.amazonaws.com
+ECR_REPOSITORY_URI=${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com
 PROJECTS=($(ls -d */ | tr -d /))
 COMMIT_HASH=$(git rev-parse --short HEAD)
 
 cd mirbase
-docker build -t mirbase:$COMMIT_HASH -f Dockerfile .
+docker build -t mirbase:$COMMIT_HASH -f Dockerfile --build-arg AWS_ACCOUNT_ID=${AWS_ACCOUNT_ID} . 
 cd ..
 
 
