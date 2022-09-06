@@ -15,7 +15,7 @@ PROJECTS=($(ls -d */ | tr -d /))
 COMMIT_HASH=$(git rev-parse --short HEAD)
 
 cd mirbase
-docker build -t mirbase:$COMMIT_HASH -f Dockerfile --build-arg AWS_ACCOUNT_ID=${AWS_ACCOUNT_ID} . 
+docker build -t --build-arg AWS_ACCOUNT_ID=${AWS_ACCOUNT_ID} mirbase:$COMMIT_HASH -f Dockerfile . 
 cd ..
 
 
