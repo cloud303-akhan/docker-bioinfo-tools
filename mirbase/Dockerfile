@@ -1,6 +1,6 @@
 ARG AWS_ACCOUNT_ID
 
-ARG BASE_IMAGE=${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/mirbase:1-12-2021-amzlinux
+ARG BASE_IMAGE=258988799493.dkr.ecr.us-west-2.amazonaws.com/mirbase:1-12-2021-amzlinux
 
 FROM $(BASE_IMAGE)
 
