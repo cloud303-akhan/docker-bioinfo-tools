@@ -4,7 +4,7 @@ ARG BASE_IMAGE=258988799493.dkr.ecr.us-west-2.amazonaws.com/mirbase:1-12-2021-am
 
 FROM $(BASE_IMAGE)
 
-LABEL repo="https://gitlab.com/Mirvie/docker-bioinfo-tools"
+LABEL repo="https://gitlab.com/mirvie/docker-bioinfo-tools"
 
 WORKDIR /pipeline
 
