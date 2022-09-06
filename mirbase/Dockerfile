@@ -1,11 +1,11 @@
 ARG AWS_ACCOUNT_ID
 
-# ARG BASE_IMAGE=${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/mirbase:1-12-2021-amzlinux
-# FROM ${BASE_IMAGE}
+ARG BASE_IMAGE=${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/mirbase:1-12-2021-amzlinux
+FROM ${BASE_IMAGE}
 
-# LABEL repo="https://gitlab.com/Mirvie/docker-bioinfo-tools"
+LABEL repo="https://gitlab.com/Mirvie/docker-bioinfo-tools"
 
-# WORKDIR /pipeline
+WORKDIR /pipeline
 
 RUN yum -y install shadow-utils
 RUN useradd dockworker --uid 1018

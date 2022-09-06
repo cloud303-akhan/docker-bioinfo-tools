@@ -6,6 +6,9 @@ grep -v '^#' .env
 # Export env vars
 export $(grep -v '^#' .env | xargs)
 
+echo "Testing on Sep 6"
+echo ${AWS_ACCOUNT_ID}
+
 set -e
 ECR_REPOSITORY_URI=${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com
 PROJECTS=($(ls -d */ | tr -d /))
