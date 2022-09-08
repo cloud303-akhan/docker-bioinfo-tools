@@ -7,15 +7,15 @@ grep -v '^#' .env
 export $(grep -v '^#' .env | xargs)
 
 echo "Testing on Sep 6"
-echo ${AWS_ACCOUNT_ID}
+echo $1
 
 set -e
-ECR_REPOSITORY_URI=${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com
+ECR_REPOSITORY_URI=$1.dkr.ecr.us-west-2.amazonaws.com
 PROJECTS=($(ls -d */ | tr -d /))
 COMMIT_HASH=$(git rev-parse --short HEAD)
 
 cd mirbase
-docker build -t mirbase:$COMMIT_HASH -f Dockerfile --build-arg AWS_ACCOUNT_ID=${AWS_ACCOUNT_ID} . 
+docker build -t mirbase:$COMMIT_HASH -f Dockerfile --build-arg AWS_ACCOUNT_ID=$1 . 
 cd ..
 
 
