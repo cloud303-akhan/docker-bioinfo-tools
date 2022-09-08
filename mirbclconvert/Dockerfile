@@ -15,4 +15,4 @@ COPY bcl-convert-3.8.2_12_g85770e0b-2.el7.x86_64.rpm /pipeline
 RUN rpm -i bcl-convert-3.8.2_12_g85770e0b-2.el7.x86_64.rpm && \
     rm bcl-convert-3.8.2_12_g85770e0b-2.el7.x86_64.rpm
 
-CMD ["/bin/bash"]
+ENTRYPOINT ["/bin/bash", "-l", "-c"]
