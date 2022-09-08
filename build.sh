@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# Show env vars
-grep -v '^#' .env
-
-# Export env vars
-export $(grep -v '^#' .env | xargs)
-
 echo "Testing on Sep 6"
 echo $1
 
