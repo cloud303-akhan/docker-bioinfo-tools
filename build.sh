@@ -15,7 +15,7 @@ cd ..
 
 for project in "${PROJECTS[@]}";
     do
-	if [[ "$project" == "mirbclconvert" ]]
+	if [[ "$project" == "mirbclconvert" ] || ["$project" == "tests"]]
 	then
 		continue
 	fi
