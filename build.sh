@@ -22,7 +22,7 @@ for project in "${PROJECTS[@]}";
 	echo "############ Bulding $project #############"
     cd $project/
 
-    docker build -t $project --build-arg GIT_COMMIT=$COMMIT_HASH -f Dockerfile .
+    docker build -t $project --build-arg GIT_COMMIT=$COMMIT_HASH --build-arg AWS_ACCOUNT_ID=$1 -f Dockerfile .
     docker tag $project "${ECR_REPOSITORY_URI}/${project}:release-$COMMIT_HASH"
     docker tag $project "${ECR_REPOSITORY_URI}/${project}:latest"
     docker push "${ECR_REPOSITORY_URI}/${project}:release-$COMMIT_HASH"
