@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Testing on Sep 6"
+echo "Testing on Sep 26"
 echo $1
 
 set -e
@@ -9,7 +9,7 @@ PROJECTS=($(ls -d */ | tr -d /))
 COMMIT_HASH=$(git rev-parse --short HEAD)
 
 cd mirbase
-docker build -t mirbase:$COMMIT_HASH -f Dockerfile --build-arg AWS_ACCOUNT_ID=$1 . 
+docker build -t mirbase:$COMMIT_HASH -f Dockerfile --build-arg AWS_ACCOUNT_ID=$1 .
 cd ..
 
 
