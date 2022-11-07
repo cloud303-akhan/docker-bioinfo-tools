@@ -1,4 +1,8 @@
-FROM amazonlinux:2.0.20220912.1
+ARG GIT_COMMIT
+FROM mirbase:$GIT_COMMIT
+
+LABEL git_commit=$GIT_COMMIT
+LABEL repo="https://gitlab.com/Mirvie/docker-bioinfo-tools"
 
 RUN yum update -y \
  && yum install -y \

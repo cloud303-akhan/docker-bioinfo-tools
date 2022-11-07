@@ -1,4 +1,4 @@
-FROM amazonlinux:2.0.20210721.2
+FROM amazonlinux:2.0.20220912.1
 
 LABEL repo="https://gitlab.com/Mirvie/docker-bioinfo-tools"
 
