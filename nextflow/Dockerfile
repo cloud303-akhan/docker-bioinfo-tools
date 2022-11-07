@@ -4,6 +4,8 @@ FROM mirbase:$GIT_COMMIT
 LABEL git_commit=$GIT_COMMIT
 LABEL repo="https://gitlab.com/Mirvie/docker-bioinfo-tools"
 
+USER root
+
 RUN yum update -y \
  && yum install -y \
     curl \
@@ -44,6 +46,8 @@ ENV JAVA_HOME /usr/lib/jvm/jre-openjdk/
 ENV TMPDIR=/tmp
 # invoke nextflow once to download dependencies
 RUN nextflow -version
+
+USER dockworker
 
 WORKDIR /opt/work
 ENTRYPOINT ["/opt/bin/nextflow.aws.sh"]
