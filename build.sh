@@ -15,21 +15,18 @@ cd ..
 
 for project in "${PROJECTS[@]}";
     do
-	if [ "$project" == "mirbclconvert" ] || [ "$project" == "tests" ]
-	then
-		continue
+	if [ "$project" == "mirbclconvert" ] || [ "$project" == "nextflow" ]; then
+		echo "############ Bulding $project #############"
+        cd $project/
+        docker build -t $project --build-arg GIT_COMMIT=$COMMIT_HASH --build-arg AWS_ACCOUNT_ID=$1 -f Dockerfile .
+        docker tag $project "${ECR_REPOSITORY_URI}/${project}:release-$COMMIT_HASH"
+        docker tag $project "${ECR_REPOSITORY_URI}/${project}:latest"
+        docker push "${ECR_REPOSITORY_URI}/${project}:release-$COMMIT_HASH"
+        docker push "${ECR_REPOSITORY_URI}/${project}:latest"
+        echo "############ Done $project #############"
+        cd ..
 	fi
-	echo "############ Bulding $project #############"
-    cd $project/
-
-    docker build -t $project --build-arg GIT_COMMIT=$COMMIT_HASH --build-arg AWS_ACCOUNT_ID=$1 -f Dockerfile .
-    docker tag $project "${ECR_REPOSITORY_URI}/${project}:release-$COMMIT_HASH"
-    docker tag $project "${ECR_REPOSITORY_URI}/${project}:latest"
-    docker push "${ECR_REPOSITORY_URI}/${project}:release-$COMMIT_HASH"
-    docker push "${ECR_REPOSITORY_URI}/${project}:latest"
-	echo "############ Done $project #############"
-
-    cd ..
+	
 
 done
 
