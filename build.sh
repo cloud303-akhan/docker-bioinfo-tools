@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Testing on Sep 26"
+echo "Testing on Nov 9"
 echo $1
 
 set -e
@@ -14,7 +14,7 @@ cd ..
 
 
 for project in "${PROJECTS[@]}"; do
-	if [ "$project" != "mirbase" ] && [ "$project" != "tests" ] && [ "$project" != "nextflow" ]; then
+	if [ "$project" != "mirbase" ] && [ "$project" != "tests" ]; then
 		echo "############ Bulding $project #############"
         cd $project/
         docker build -t $project --build-arg GIT_COMMIT=$COMMIT_HASH --build-arg AWS_ACCOUNT_ID=$1 -f Dockerfile .
