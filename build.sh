@@ -12,9 +12,8 @@ cd mirbase
 docker build -t mirbase:$COMMIT_HASH -f Dockerfile --build-arg AWS_ACCOUNT_ID=$1 .
 cd ..
 
-
 for project in "${PROJECTS[@]}"; do
-	if [ "$project" != "mirbase" ] && [ "$project" != "tests" ]; then
+	if [ "$project" != "tests" ]; then
 		echo "############ Bulding $project #############"
         cd $project/
         docker build -t $project --build-arg GIT_COMMIT=$COMMIT_HASH --build-arg AWS_ACCOUNT_ID=$1 -f Dockerfile .
