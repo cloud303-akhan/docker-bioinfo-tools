@@ -18,7 +18,7 @@ RUN yum update -y \
 RUN rm -rf /var/cache/yum
 
 # Install nextflow
-RUN curl -L "https://github.com/nextflow-io/nextflow/releases/download/v21.12.1-edge/nextflow" -o /usr/bin/nextflow && \
+RUN curl -L "https://github.com/nextflow-io/nextflow/releases/download/v22.10.1/nextflow" -o /usr/bin/nextflow && \
  chmod +x /usr/bin/nextflow
 
 # install awscli v2
