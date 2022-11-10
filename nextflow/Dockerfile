@@ -1,10 +1,4 @@
-ARG GIT_COMMIT
-FROM mirbase:$GIT_COMMIT
-
-LABEL git_commit=$GIT_COMMIT
-LABEL repo="https://gitlab.com/Mirvie/docker-bioinfo-tools"
-
-USER root
+FROM amazonlinux:2.0.20220912.1
 
 RUN yum update -y \
  && yum install -y \
@@ -18,7 +12,7 @@ RUN yum update -y \
 RUN rm -rf /var/cache/yum
 
 # Install nextflow
-RUN curl -L "https://github.com/nextflow-io/nextflow/releases/download/v22.10.1/nextflow" -o /usr/bin/nextflow && \
+RUN curl -L "https://github.com/nextflow-io/nextflow/releases/download/v21.12.1-edge/nextflow" -o /usr/bin/nextflow && \
  chmod +x /usr/bin/nextflow
 
 # install awscli v2
@@ -27,6 +21,15 @@ RUN curl -s "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/
  && /tmp/aws/install -b /usr/bin \
  && rm -rf /tmp/aws*
 
+# Add dockworker
+RUN yum -y install shadow-utils
+RUN useradd dockworker --uid 1018
+RUN groupadd dockerunion --gid 1019
+RUN usermod -g dockerunion  dockworker
+RUN yum install -y wget gzip which procps make
+
+
+RUN chmod 777 /opt/
 USER dockworker
 
 # install a custom entrypoint script that handles being run within an AWS Batch Job
