@@ -8,4 +8,4 @@ WORKDIR /pipeline
 
 RUN conda install -y python=3.6 samtools=1.9
 
-CMD ["/bin/bash"]
+ENTRYPOINT ["/bin/bash", "-l", "-c"]

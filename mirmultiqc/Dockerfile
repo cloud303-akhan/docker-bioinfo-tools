@@ -10,4 +10,4 @@ ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
 
 RUN conda install -y python=3.6 multiqc=1.11
 
-CMD ["/bin/bash"]
+ENTRYPOINT ["/bin/bash", "-l", "-c"]
