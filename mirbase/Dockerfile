@@ -27,5 +27,3 @@ RUN wget --quiet \
 ENV PATH=$CONDA_DIR/bin:$PATH
 RUN conda config --add channels bioconda
 RUN conda config --add channels conda-forge
-
-ENTRYPOINT ["/bin/bash", "-l", "-c"]

@@ -8,5 +8,3 @@ WORKDIR /pipeline
 
 RUN conda install -y python=3.6
 RUN pip install checksumdir
-
-ENTRYPOINT ["/bin/bash", "-l", "-c"]

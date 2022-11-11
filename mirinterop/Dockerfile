@@ -8,6 +8,3 @@ WORKDIR /pipeline
 
 RUN conda install -y python=3.7 pandas=1.3.2
 RUN pip install interop 
-
-ENTRYPOINT ["/bin/bash", "-l", "-c"]
-
