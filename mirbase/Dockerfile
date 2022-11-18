@@ -8,7 +8,7 @@ RUN yum -y install shadow-utils
 RUN useradd dockworker --uid 1018
 RUN groupadd dockerunion --gid 1019
 RUN usermod -g dockerunion dockworker
-RUN yum install -y wget gzip which procps make git
+RUN yum install -y wget gzip which procps make git tar
 
 RUN chmod 777 /opt
 
