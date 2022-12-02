@@ -62,8 +62,8 @@ fi
 if [ -z "${OUT_DIR_S3}" ]; then
   usage "NF_WORKDIR_S3 not set, unable to determine NF_WORKDIR_S3"
 fi
-export INPUT_DIR=/mnt/efs$(echo "${INPUT_DIR_S3#*/}")
-export REF_DIR=/mnt/efs$(echo "${REF_FILES_DIR_S3#*/}")
+export INPUT_DIR="${INPUT_DIR_S3}"
+export REF_DIR="${REF_FILES_DIR_S3}"
 
 DEFAULT_AWS_CLI_PATH=/opt/aws-cli/bin/aws
 export AWS_CLI_PATH=${JOB_AWS_CLI_PATH:-$DEFAULT_AWS_CLI_PATH}
