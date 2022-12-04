@@ -88,23 +88,14 @@ export NF_CFRNA_VERSION=$NEXTFLOW_PROJECT
 if [ "$GUID" = "/" ]; then
     GUID=`date | md5sum | cut -d " " -f 1`
 fi
+
 # Workspace
-mkdir -p /mnt/efs/$GUID
-cd  /mnt/efs/$GUID
+mkdir -p ~/$GUID
+cd  ~/$GUID
 
 export NF_WORKDIR=$NF_WORKDIR_S3
 export OUTDIR=$OUT_DIR_S3
 
-# Create Dependency Folders
-mkdir -p $INPUT_DIR || error_exit "Failed to create input folder."
-mkdir -p $REF_DIR || error_exit "Failed to create ref folder."
-
-
-echo "== Syncing input files =="
-aws s3 sync --no-progress $INPUT_DIR_S3 $INPUT_DIR
-
-echo "== Syncing ref files =="
-aws s3 sync --no-progress $REF_FILES_DIR_S3 $REF_DIR
 
 # Create the default config using environment variables
 # passed into the container
@@ -148,7 +139,6 @@ function preserve_session() {
         echo "== Preserving Session Log =="
         aws s3 cp --no-progress .nextflow.log $NF_LOGSDIR/.nextflow.log.${GUID/\//.}
         aws s3 cp --no-progress .nextflow.log $OUT_DIR_S3/.nextflow.log.${GUID/\//.}
-
     fi
 }
 
@@ -165,7 +155,10 @@ function cleanup() {
 
     #show_log
     preserve_session
-    rm -rf /mnt/efs/$TASK_ID
+    rm -rf ~/$GUID
+    if [ -n "$TASK_ID" ]; then
+        rm -rf ~/$TASK_ID
+    fi
     echo "=== Bye! ==="
 }
 
@@ -194,10 +187,7 @@ if [[ "$NEXTFLOW_PROJECT" =~ ^s3://.* ]]; then
     mkdir -p pipeline
     NEXTFLOW_PROJECT=./project
 fi
-export HOME=/mnt/efs/$GUID
-
-# echo "== Set Workspace for dockworker =="
-# chown -R dockworker:dockerunion /mnt/efs
+export HOME=~/$GUID
 
 # echo "== Switch User =="
 # su dockworker -p
