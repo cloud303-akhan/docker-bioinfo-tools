@@ -21,6 +21,7 @@ usage () {
   fi
   cat <<ENDUSAGE
 Usage:
+export AWS_ACCOUNT_ID="my-account-id"
 export INPUT_DIR_S3="s3://my-bucket"
 export REF_FILES_DIR_S3="s3://my-bucket"
 export NF_LOGSDIR="s3://my-bucket"
@@ -32,8 +33,10 @@ ENDUSAGE
   exit 2
 }
 
-
 # Check what environment variables are set
+if [ -z "${AWS_ACCOUNT_ID}" ]; then
+  usage "AWS_ACCOUNT_ID not set, unable to determine AWS_ACCOUNT_ID"
+fi
 if [ -z "${DOCKER_TAG}" ]; then
   usage "DOCKER_TAG not set, unable to determine DOCKER_TAG"
 fi
@@ -46,22 +49,20 @@ fi
 if [ -z "${INPUT_DIR_S3}" ]; then
   usage "INPUT_DIR_S3 not set, unable to determine input files"
 fi
-
 if [ -z "${REF_FILES_DIR_S3}" ]; then
   usage "REF_FILES_DIR_S3 not set, unable to determine ref files"
 fi
-
 if [ -z "${NF_LOGSDIR}" ]; then
   usage "NF_LOGSDIR not set, unable to determine NF_LOGSDIR"
 fi
-
 if [ -z "${NF_WORKDIR_S3}" ]; then
   usage "NF_WORKDIR not set, unable to determine NF_WORKDIR_S3"
 fi
-
 if [ -z "${OUT_DIR_S3}" ]; then
   usage "NF_WORKDIR_S3 not set, unable to determine NF_WORKDIR_S3"
 fi
+
+export AWS_ACCOUNT_ID="${AWS_ACCOUNT_ID}"
 export INPUT_DIR="${INPUT_DIR_S3}"
 export REF_DIR="${REF_FILES_DIR_S3}"
 
@@ -94,7 +95,7 @@ mkdir -p ~/$GUID
 cd  ~/$GUID
 
 export NF_WORKDIR=$NF_WORKDIR_S3
-export OUTDIR=$OUT_DIR_S3
+export OUT_DIR=$OUT_DIR_S3
 
 
 # Create the default config using environment variables
