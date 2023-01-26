@@ -8,4 +8,4 @@ WORKDIR /pipeline
 
 ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
 
-RUN conda install -y python=3.6 multiqc=1.11
+RUN conda install -y python=3.7 multiqc=1.14
