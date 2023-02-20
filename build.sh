@@ -8,6 +8,12 @@ ECR_REPOSITORY_URI=$1.dkr.ecr.us-east-1.amazonaws.com
 PROJECTS=($(ls -d */ | tr -d /))
 COMMIT_HASH=$(git rev-parse --short HEAD)
 
+###  Delete this later
+echo $ECR_REPOSITORY_URI
+echo $PROJECTS
+echo $COMMIT_HASH
+###
+
 cd mirbase
 docker build -t mirbase:$COMMIT_HASH -f Dockerfile --build-arg AWS_ACCOUNT_ID=$1 .
 cd ..
