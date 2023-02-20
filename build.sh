@@ -4,7 +4,7 @@ echo "Testing on Nov 9"
 echo $1
 
 set -e
-ECR_REPOSITORY_URI=$1.dkr.ecr.us-west-2.amazonaws.com
+ECR_REPOSITORY_URI=$1.dkr.ecr.us-east-1.amazonaws.com
 PROJECTS=($(ls -d */ | tr -d /))
 COMMIT_HASH=$(git rev-parse --short HEAD)
 
