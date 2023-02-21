@@ -3,7 +3,7 @@
 # set -e
 ECR_REPOSITORY_URI=570351108046.dkr.ecr.us-east-1.amazonaws.com
 PROJECTS=($(ls -d */ | tr -d /))
-COMMIT_HASH=$(git rev-parse --short HEAD)
+COMMIT_HASH=$CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 7
 
 ###
 echo $COMMIT_HASH
