@@ -19,6 +19,9 @@ for project in "${PROJECTS[@]}";
 	elif [[ "$project" == "mirbclconvert" ]]
 	then
 		continue
+	elif [[ "$project" == "tests" ]]
+	then
+		continue
 	elif [[ "$project" == "mircheckfastq" ]]
 	then
         echo "############ Bulding $project #############"
