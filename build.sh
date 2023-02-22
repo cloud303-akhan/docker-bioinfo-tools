@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+# set -e
 ECR_REPOSITORY_URI=570351108046.dkr.ecr.us-east-1.amazonaws.com
 PROJECTS=($(ls -d */ | tr -d /))
 COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 7)
@@ -99,6 +99,10 @@ for project in "${PROJECTS[@]}";
 		continue
 	elif [[ "$project" == "mirpicard" ]]
 	then
+		cd $project/
+		echo -e "\n$project:" >> $CODEBUILD_SRC_DIR/versions.txt 2>&1
+		docker run "${ECR_REPOSITORY_URI}/${project}:release-$COMMIT_HASH" "${project:3}" "CheckIlluminaDirectory -version" >> $CODEBUILD_SRC_DIR/versions.txt 2>&1 || true
+		cd ..
 		continue
 	elif [[ "$project" == "tests" ]]
 	then
@@ -112,6 +116,6 @@ for project in "${PROJECTS[@]}";
 done
 
 cat $CODEBUILD_SRC_DIR/versions.txt
-rm $CODEBUILD_SRC_DIR/versions.txt
+# rm $CODEBUILD_SRC_DIR/versions.txt
 
 aws ssm put-parameter --overwrite --name /VERSION/DOCKER_RUNTIME --value release-$COMMIT_HASH
