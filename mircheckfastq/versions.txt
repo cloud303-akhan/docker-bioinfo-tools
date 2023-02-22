@@ -1,0 +1,9 @@
+Version: 0.1.1
+Version: 0.1.1
+bash: mircheckfastq-: command not found
+bash: mircheckfastq-: command not found
+mircheckfastq-
+mircheckfastq-
+mircheckfastq-
+mircheckfastq-
+Version: 0.1.1

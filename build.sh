@@ -30,7 +30,7 @@ for project in "${PROJECTS[@]}";
         docker build -t $project --build-arg GIT_COMMIT=$COMMIT_HASH -f Dockerfile .
         docker tag $project "${ECR_REPOSITORY_URI}/${project}:release-$COMMIT_HASH"
         docker tag $project "${ECR_REPOSITORY_URI}/${project}:latest"
-        docker run "${ECR_REPOSITORY_URI}/${project}:release-$COMMIT_HASH" biopet-validatefastq --version
+        docker run "${ECR_REPOSITORY_URI}/${project}:release-$COMMIT_HASH" biopet-validatefastq --version >> $CODEBUILD_SRC_DIR/versions.txt 2>&1
         docker push "${ECR_REPOSITORY_URI}/${project}:release-$COMMIT_HASH"
         docker push "${ECR_REPOSITORY_URI}/${project}:latest"
         echo "############ Done $project #############"
@@ -44,7 +44,7 @@ for project in "${PROJECTS[@]}";
     docker build -t $project --build-arg GIT_COMMIT=$COMMIT_HASH -f Dockerfile .
     docker tag $project "${ECR_REPOSITORY_URI}/${project}:release-$COMMIT_HASH"
     docker tag $project "${ECR_REPOSITORY_URI}/${project}:latest"
-    docker run "${ECR_REPOSITORY_URI}/${project}:release-$COMMIT_HASH" "${project:3}" --version
+    docker run "${ECR_REPOSITORY_URI}/${project}:release-$COMMIT_HASH" "${project:3}" --version >> $CODEBUILD_SRC_DIR/versions.txt 2>&1
     docker push "${ECR_REPOSITORY_URI}/${project}:release-$COMMIT_HASH"
     docker push "${ECR_REPOSITORY_URI}/${project}:latest"
 	echo "############ Done $project #############"
@@ -52,5 +52,8 @@ for project in "${PROJECTS[@]}";
     cd ..
 
 done
+
+cat $CODEBUILD_SRC_DIR/versions.txt
+rm $CODEBUILD_SRC_DIR/versions.txt
 
 aws ssm put-parameter --overwrite --name /VERSION/DOCKER_RUNTIME --value release-$COMMIT_HASH
